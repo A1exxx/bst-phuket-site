@@ -1,0 +1,15 @@
+{
+  "name": "bst-phuket-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node check.mjs"
+  },
+  "devDependencies": {
+    "@phosphor-icons/core": "^2.1.1",
+    "esbuild": "^0.28.2",
+    "simple-icons": "^16.34.0",
+    "three": "^0.186.1"
+  }
+}
