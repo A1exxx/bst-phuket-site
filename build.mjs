@@ -74,43 +74,10 @@ function stage(L, id, modes, labels, legend, withNotes, auto) {
 </div>`;
 }
 
-const VIS = {
-  signs: `<div class="vis vis-signs" aria-hidden="true"><span>Aa</span></div>`,
-  letters: `<div class="vis vis-letters" aria-hidden="true"><span>B</span></div>`,
-  led: `<div class="vis vis-led" aria-hidden="true"><i></i></div>`,
-  print: `<div class="vis vis-print" aria-hidden="true"><i></i><i></i><i></i></div>`,
-  dynamic: `<div class="vis vis-dynamic" aria-hidden="true"><i></i></div>`,
-  robots: `<div class="vis vis-robots" aria-hidden="true"><img src="../assets/img/robot.webp" alt="" width="1200" height="896" loading="lazy" decoding="async"></div>`,
-  branding: `<div class="vis vis-branding" aria-hidden="true"><i></i><i></i><i></i><b>Aa</b></div>`
-};
-
-const BUILDING = `
-<svg class="bld" viewBox="0 0 520 380" aria-hidden="true" focusable="false">
-  <rect class="b-ground" x="0" y="350" width="520" height="30"/>
-  <rect class="b-wall" x="70" y="120" width="380" height="230"/>
-  <rect class="b-cap" x="58" y="106" width="404" height="16" rx="2"/>
-  <g class="g g-roof">
-    <path class="b-frame" d="M150 106V44M260 106V44M370 106V44M136 78H384"/>
-    <rect x="136" y="30" width="38" height="46" rx="4"/><rect x="184" y="30" width="38" height="46" rx="4"/>
-    <rect x="232" y="30" width="38" height="46" rx="4"/><rect x="280" y="30" width="38" height="46" rx="4"/>
-    <rect x="328" y="30" width="56" height="46" rx="4"/>
-  </g>
-  <rect class="b-fascia" x="104" y="154" width="312" height="52" rx="4"/>
-  <g class="g g-facade">
-    <rect x="124" y="168" width="26" height="24" rx="3"/><rect x="158" y="168" width="26" height="24" rx="3"/>
-    <rect x="192" y="168" width="26" height="24" rx="3"/><rect x="226" y="168" width="40" height="24" rx="3"/>
-    <rect x="274" y="168" width="26" height="24" rx="3"/><rect x="308" y="168" width="26" height="24" rx="3"/>
-    <rect x="342" y="168" width="54" height="24" rx="3"/>
-  </g>
-  <rect class="b-glass" x="104" y="226" width="200" height="124" rx="3"/>
-  <path class="b-mull" d="M204 226V350"/>
-  <g class="g g-inside">
-    <circle cx="150" cy="270" r="15"/><rect x="174" y="260" width="62" height="9" rx="3"/><rect x="174" y="275" width="40" height="7" rx="3"/>
-  </g>
-  <path class="b-counter" d="M118 322H290V350H118Z"/>
-  <rect class="b-door" x="330" y="236" width="86" height="114" rx="3"/>
-  <path class="b-mull" d="M373 236V350"/>
-</svg>`;
+// Картинки направлений — кинематографичные кадры
+const photo = (name) => `<div class="vis vis-photo" aria-hidden="true"><img src="../assets/img/${name}.webp" alt="" width="1200" height="1200" loading="lazy" decoding="async"></div>`;
+const VIS = { signs: photo("t-signs"), letters: photo("t-letters"), led: photo("t-led"), print: photo("t-print"), dynamic: photo("t-dynamic"), robots: photo("t-robots"), branding: photo("t-branding") };
+const ARROW = () => `<i class="btn-arrow">${icon("arrow-up-right")}</i>`;
 
 function secHead(s, extra = "") {
   return `<header class="sec-head rv"><h2>${acc(s.h2)}</h2>${s.lead ? `<p class="lead">${esc(s.lead)}</p>` : ""}${extra}</header>`;
@@ -131,21 +98,28 @@ function rows(items, L, opts = {}) {
 const R = {
   hero(s, L) {
     return `
-<section class="hero night" data-rays="0.74">
-  <div class="wrap hero-grid">
-    <div class="hero-copy">
+<section class="hero cine night">
+  <div class="shot" aria-hidden="true"><div class="cam"><img src="../assets/img/hero.webp" alt="" width="1600" height="1600" fetchpriority="high"><div class="plate"><span data-plate>${esc(L.stage.sample)}</span></div></div></div>
+  <div class="grade" aria-hidden="true"></div>
+  <div class="wrap cine-ui">
+    <div class="cine-top">
       <h1>${acc(s.h1)}</h1>
       <p class="lead">${esc(s.lead)}</p>
+    </div>
+    <div class="cine-bottom">
+      <label class="field"><span>${esc(L.stage.label)}</span>
+        <input type="text" maxlength="18" placeholder="${esc(L.stage.placeholder)}" autocomplete="off" autocapitalize="characters" spellcheck="false" data-plate-input></label>
       <div class="cta-row">
-        <a class="btn btn-accent btn-lg" href="#quote">${esc(L.ui.quote)}</a>
+        <a class="btn btn-accent btn-lg" href="#quote"><span>${esc(L.ui.quote)}</span>${ARROW()}</a>
         <a class="btn btn-ghost btn-lg" data-track="Contact" target="_blank" rel="noopener" href="${waLink(L.quiz.msgHead)}">${icon("whatsapp-logo")}<span>${esc(L.ui.wa)}</span></a>
       </div>
-      <ul class="facts">${s.facts.map((f) => `<li>${icon("check")}<span>${esc(f)}</span></li>`).join("")}</ul>
     </div>
-    <div class="hero-stage">
-      <p class="try" id="try">${esc(s.try)}</p>
-      ${stage(L, "hero", ["face", "halo", "neon", "box", "led"], L.stage.modes, L.stage.modesTitle, false, true)}
-    </div>
+  </div>
+</section>
+<section class="sec night demo-light stage-sec" id="try">
+  <div class="wrap">
+    <header class="sec-head rv"><h2>${esc(s.try)}</h2><ul class="facts">${s.facts.map((f) => `<li>${icon("check")}<span>${esc(f)}</span></li>`).join("")}</ul></header>
+    ${stage(L, "hero", ["face", "halo", "neon", "box", "led"], L.stage.modes, L.stage.modesTitle, false, true)}
   </div>
 </section>`;
   },
@@ -164,7 +138,7 @@ const R = {
       <h1>${acc(s.h1)}</h1>
       <p class="lead">${esc(s.lead)}</p>
       <div class="cta-row">
-        <a class="btn btn-accent btn-lg" href="#quote">${esc(L.ui.quote)}</a>
+        <a class="btn btn-accent btn-lg" href="#quote"><span>${esc(L.ui.quote)}</span>${ARROW()}</a>
         <a class="btn btn-ghost btn-lg" data-track="Contact" target="_blank" rel="noopener" href="${waLink(L.quiz.msgHead)}">${icon("whatsapp-logo")}<span>${esc(L.ui.wa)}</span></a>
       </div>
     </div>
@@ -203,7 +177,7 @@ const R = {
   <div class="wrap">
     ${secHead(s)}
     <div class="place rv" data-place>
-      <div class="place-art" data-k="${s.tabs[0].k}">${BUILDING}</div>
+      <div class="place-art" data-k="${s.tabs[0].k}"><img class="pp pp-facade" src="../assets/img/t-signs.webp" alt="" width="1200" height="1200" loading="lazy"><img class="pp pp-roof" src="../assets/img/hero.webp" alt="" width="1600" height="1600" loading="lazy"><img class="pp pp-inside" src="../assets/img/p-inside.webp" alt="" width="1200" height="1200" loading="lazy"></div>
       <div class="place-side">
         <div class="place-tabs" role="tablist" aria-label="${esc(plain(s.h2))}">${tabs}</div>
         ${panels}
@@ -365,6 +339,7 @@ function quote(L, key) {
     `<label class="chip"><input type="radio" name="where" value="${esc(v)}"><span>${esc(v)}</span></label>`).join("");
   return `
 <section class="sec night quote" id="quote">
+  <img class="quote-bg" src="../assets/img/street.webp" alt="" width="1600" height="1600" loading="lazy" aria-hidden="true">
   <div class="wrap quote-grid">
     <div class="quote-copy rv">
       <h2>${acc(q.h2)}</h2>
@@ -489,6 +464,7 @@ ${alt}
 <div class="hdr-sentinel" aria-hidden="true"></div>
 <main id="main">
 ${p.sections.map((s) => R[s.type](s, L, key)).join("\n")}
+<section class="sec night manifesto"><div class="wrap"><p data-scrub>${esc(L.footer.about)}</p></div></section>
 ${quote(L, key)}
 ${contacts(L)}
 </main>
@@ -565,6 +541,7 @@ ver.v3d = hash(readFileSync(path.join(OUT, "assets/scene3d.js")));
 writeFileSync(path.join(OUT, "assets/site.css"), css);
 writeFileSync(path.join(OUT, "assets/site.js"), jsSrc);
 cpSync(path.join(ROOT, "src/img"), path.join(OUT, "assets/img"), { recursive: true });
+cpSync(path.join(ROOT, "src/look"), path.join(OUT, "look"), { recursive: true }); // страница с тремя вариантами первого экрана
 if (existsSync(path.join(ROOT, "src/favicon.svg"))) cpSync(path.join(ROOT, "src/favicon.svg"), path.join(OUT, "assets/favicon.svg"));
 writeFileSync(path.join(OUT, ".nojekyll"), "");
 writeFileSync(path.join(OUT, "index.html"), gateway(ver));

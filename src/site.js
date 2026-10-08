@@ -222,7 +222,7 @@
         }, 55);
       }
       const timer = setInterval(() => {
-        if (!visible || document.hidden) return;
+        if (!visible || document.hidden || input.value.trim()) return;
         step++;
         if (step % 2) return type(names[(step >> 1) % names.length]);
         const r = radios[(radios.findIndex((x) => x.checked) + 1) % radios.length];
@@ -342,6 +342,41 @@
     // «Рассчитать» в карточке уровня подставляет его название в комментарий
     const tier = e.target.closest("[data-note]");
     if (tier && !quiz.elements.note.value) quiz.elements.note.value = tier.dataset.note;
+  });
+
+  // --- Первый экран: название из поля появляется на вывеске прямо в кадре ---
+  const plate = $("[data-plate]"), plateInput = $("[data-plate-input]");
+  if (plate) {
+    const fitPlate = () => {
+      const box = plate.parentElement, n = Math.max(plate.textContent.length, 4);
+      plate.style.fontSize = `${Math.min(box.offsetHeight * 0.56, (box.offsetWidth * 0.92) / (n * 0.7)).toFixed(1)}px`;
+    };
+    plateInput.addEventListener("input", () => {
+      plate.textContent = plateInput.value.trim() || T.sample;
+      fitPlate();
+      $$("[data-stage-input]").forEach((i) => { i.value = plateInput.value; i.dispatchEvent(new Event("input", { bubbles: true })); });
+    });
+    addEventListener("resize", fitPlate);
+    document.fonts?.ready.then(fitPlate);
+    fitPlate();
+  }
+
+  // --- Крупная фраза перед заявкой: слова «зажигаются» по мере прокрутки ---
+  $$("[data-scrub]").forEach((el) => {
+    if (reduce) return;
+    splitWords(el);
+    const words = $$(".w", el);
+    let raf = 0;
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      const r = el.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (innerHeight * 0.9 - r.top) / (r.height + innerHeight * 0.36)));
+      words.forEach((w, i) => { w.style.opacity = Math.min(1, Math.max(0.14, p * words.length * 1.15 - i)).toFixed(2); });
+    };
+    new IntersectionObserver(([en]) => {
+      if (en.isIntersecting) { if (!raf) raf = requestAnimationFrame(tick); }
+      else { cancelAnimationFrame(raf); raf = 0; }
+    }).observe(el);
   });
 
   // --- Нижняя панель на телефоне: прячется, когда форма заявки уже на экране ---

@@ -633,3 +633,96 @@ html { scroll-padding-top: calc(var(--hdr-h) + var(--hdr-top) + 16px); }
 .paper :focus-visible, .tile-print:focus-visible { outline-color: var(--ink); }
 .tile-branding:focus-visible, .btn-accent:focus-visible { outline-color: #fff; }
 .paper .btn-accent:focus-visible { outline-color: var(--ink); }
+
+
+/* ================= Кинематографичный слой: фотореальные кадры во весь экран, крупная типографика ================= */
+
+/* Ритм: блоки — как отдельные сцены */
+.sec { padding: clamp(88px, 12vw, 176px) 0; }
+.sec-head { margin-bottom: clamp(32px, 5vw, 64px); }
+h2 { font-size: clamp(1.9rem, 1.1rem + 3.4vw, 3.9rem); }
+.split > .sec-head h2, .duo h2, .model-grid h2 { font-size: clamp(1.8rem, 1.1rem + 2.4vw, 3rem); }
+
+/* Кнопки-капсулы; у главной кнопки стрелка в своём круге */
+.btn { border-radius: 999px; }
+.btn-lg { padding: 14px 30px; }
+.btn-arrow { display: grid; place-items: center; width: 36px; height: 36px; margin: -6px -18px -6px 6px; border-radius: 50%; background: rgba(5, 11, 31, .16); transition: transform .5s var(--ease); }
+.btn-arrow .ic { width: 16px; height: 16px; }
+.btn:hover .btn-arrow { transform: translate(2px, -2px) scale(1.08); }
+.field input, .field textarea { border-radius: 16px; }
+
+/* Первый экран — кадр во весь экран; название клиента вписано в вывеску на кадре */
+.hero.cine { position: relative; height: 100svh; min-height: 660px; padding: 0; overflow: hidden; isolation: isolate; background: var(--night); --w: max(100vw, 100svh); --fx: .86; --fy: .42; }
+.cine .shot { position: absolute; z-index: -3; width: var(--w); height: var(--w); left: calc((100vw - var(--w)) * var(--fx)); top: calc((100svh - var(--w)) * var(--fy)); }
+.cine .cam { position: absolute; inset: 0; transform-origin: 68% 50%; animation: cam 30s ease-in-out infinite alternate; }
+@keyframes cam { to { transform: scale(1.09); } }
+.cine .cam img { width: 100%; height: 100%; max-width: none; }
+.cine .plate { position: absolute; left: 54.6%; top: 41.9%; width: 24.4%; height: 16.9%; display: grid; place-items: center; overflow: hidden; transform: perspective(900px) rotateY(-3deg); }
+.cine .plate span { font-weight: 900; line-height: 1; letter-spacing: -.02em; white-space: nowrap; text-transform: uppercase; color: #1E0B00; mix-blend-mode: multiply; opacity: .88; }
+.cine .plate::after { content: ""; position: absolute; inset: 0; background: #fff; mix-blend-mode: overlay; opacity: 0; animation: hum 7s steps(1) infinite; }
+@keyframes hum { 0%, 100% { opacity: 0; } 47% { opacity: .22; } 49% { opacity: 0; } 51% { opacity: .16; } 53% { opacity: 0; } }
+.cine .grade { position: absolute; inset: 0; z-index: -2; background:
+  linear-gradient(180deg, rgba(3, 7, 20, .8) 0%, rgba(3, 7, 20, .3) 26%, rgba(3, 7, 20, 0) 46%, rgba(3, 7, 20, .2) 64%, rgba(5, 11, 31, 1) 100%),
+  linear-gradient(90deg, rgba(3, 7, 20, .66) 0%, rgba(3, 7, 20, 0) 60%); }
+.cine-ui { height: 100%; display: grid; grid-template-rows: 1fr auto; padding: calc(var(--hdr-h) + var(--hdr-top) + clamp(22px, 6vh, 64px)) 0 clamp(26px, 5vh, 56px); }
+.cine-top { max-width: 940px; }
+.hero.cine h1 { max-width: none; font-size: clamp(2.5rem, 1rem + 6.2vw, 6.4rem); line-height: .96; letter-spacing: -.045em; text-shadow: 0 2px 30px rgba(3, 7, 20, .55); }
+:lang(th) .hero.cine h1 { line-height: 1.22; letter-spacing: 0; }
+.hero.cine .lead { max-width: 30em; margin-top: clamp(14px, 2.4vh, 26px); color: #DCE3F8; text-shadow: 0 1px 18px rgba(3, 7, 20, .7); }
+.cine-bottom { display: grid; gap: 14px; max-width: 580px; animation: h1in 1s var(--ease) .3s both; }
+.cine-bottom .field > span { color: #DCE3F8; }
+.cine-bottom .field input { min-height: 56px; background: rgba(6, 12, 34, .55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .22); border: 0; }
+.cine-bottom .cta-row { margin-top: 0; }
+.cine-bottom .btn-ghost { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.stage-sec .facts { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 20px; }
+@media (max-width: 700px) { .cine-bottom .cta-row .btn { flex: 1 1 100%; } }
+
+/* Плитки каталога — кадры вместо нарисованных значков; рамка в два слоя */
+.bento { gap: 26px; }
+.bento .tile, .tile-print, .tile-branding { color: #fff; background: var(--night-2); box-shadow: 0 0 0 6px rgba(255, 255, 255, .035), 0 0 0 7px rgba(255, 255, 255, .09); }
+.bento .tile:hover { box-shadow: 0 0 0 6px rgba(255, 255, 255, .05), 0 0 0 7px rgba(239, 123, 32, .55), 0 34px 60px -34px rgba(0, 0, 0, .9); }
+.vis-photo img { width: 100%; height: 100%; max-width: none; object-fit: cover; filter: saturate(1.06) contrast(1.04); transition: transform 1.2s var(--ease); }
+.tile:hover .vis-photo img { transform: scale(1.06); }
+.vis-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5, 11, 31, .08) 28%, rgba(5, 11, 31, .92) 92%); }
+.tile-print .tile-go, .tile-branding .tile-go { background: rgba(255, 255, 255, .14); }
+.tile-branding:hover .tile-go { background: var(--orange); color: var(--night); }
+.tile-txt strong { font-size: clamp(1.5rem, 2.5vw, 2.15rem); }
+@media (max-width: 899px) { .tile-branding .vis { opacity: 1; } .bento .tile { min-height: 300px; } }
+.phead-vis { box-shadow: 0 0 0 6px rgba(255, 255, 255, .035), 0 0 0 7px rgba(255, 255, 255, .09); }
+.phead-vis .vis-photo::after { background: linear-gradient(180deg, rgba(5, 11, 31, 0) 60%, rgba(5, 11, 31, .5)); }
+.phead-vis .vis { animation: cam 26s ease-in-out infinite alternate; }
+
+/* «Где будет вывеска» — три кадра вместо схемы */
+.place-art { position: relative; aspect-ratio: 4 / 3; padding: 0; background: var(--night); box-shadow: 0 0 0 6px rgba(11, 19, 48, .05), 0 0 0 7px rgba(11, 19, 48, .13); }
+.pp { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; opacity: 0; transform: scale(1.07); transition: opacity .9s var(--ease), transform 1.8s var(--ease); }
+.pp-roof { object-position: 78% 50%; }
+[data-k="facade"] .pp-facade, [data-k="roof"] .pp-roof, [data-k="inside"] .pp-inside { opacity: 1; transform: none; }
+
+/* Живая вывеска — на сфотографированной стене, а не на нарисованной */
+.wall { background: url("img/wall.webp") center 34% / cover; }
+.shop, .pave { display: none; }
+.sign { top: 8%; height: 32%; }
+.glowspill { inset: 0 0 46% 0; opacity: .5; }
+[data-time="day"] .wall { filter: brightness(2.5) saturate(.75) contrast(.92); }
+.stage { aspect-ratio: 16 / 10; box-shadow: 0 0 0 6px rgba(255, 255, 255, .035), 0 0 0 7px rgba(255, 255, 255, .09), 0 40px 80px -44px rgba(0, 0, 0, .9); }
+
+/* Крупная фраза и заявка на фоне ночной улицы */
+.manifesto { padding-bottom: clamp(40px, 6vw, 80px); }
+.manifesto p { max-width: 21em; font-weight: 900; font-size: clamp(1.8rem, 1rem + 3.9vw, 4.4rem); line-height: 1.05; letter-spacing: -.04em; text-wrap: balance; }
+:lang(th) .manifesto p { line-height: 1.3; letter-spacing: 0; }
+.manifesto .w { opacity: .14; }
+.sec.night + .sec.manifesto > .wrap { border-top: 0; }
+.quote { position: relative; overflow: hidden; isolation: isolate; }
+.quote-bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 62%; opacity: .55; }
+.quote::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, var(--night) 0%, rgba(5, 11, 31, .62) 34%, rgba(5, 11, 31, .9) 100%); }
+.quote h2 { font-size: clamp(2.2rem, 1.1rem + 4.4vw, 5rem); }
+.model-view, .quiz { box-shadow: 0 0 0 6px rgba(255, 255, 255, .035), 0 0 0 7px rgba(255, 255, 255, .09); }
+.has-eb.quiz { box-shadow: none; }
+
+@media (prefers-reduced-motion: reduce) { .manifesto .w { opacity: 1; } }
+
+/* Заголовок первого экрана — две-три строки на всю ширину, а не узкий столбик */
+.cine-top { max-width: 1120px; }
+.hero.cine h1 { font-size: clamp(2.4rem, 1rem + 4.7vw, 5.2rem); line-height: 1; }
+@media (min-width: 701px) and (max-width: 1100px) { .hero.cine .lead { max-width: 44vw; } }
+@media (max-width: 700px) { .hero.cine .lead { font-size: 1rem; } }
