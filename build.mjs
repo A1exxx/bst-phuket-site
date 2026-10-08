@@ -401,6 +401,11 @@ function page(L, key, ver) {
   const file = `${key}.html`;
   const nav = (cls) => PAGES.slice(1).map((k) =>
     `<a${cls ? ` class="${cls}"` : ""} href="${k}.html"${k === key ? ` aria-current="page"` : ""}>${esc(L.ui.nav[k])}</a>`).join("");
+  // Раскрывающееся меню показывает всё дерево из документа заказчика: раздел и его подпункты
+  const subs = (k) => L.pages[k].sections.flatMap((x) => x.type === "duo"
+    ? [[x.id, x.a.h2], [x.id, x.b.h2]]
+    : x.id && x.h2 ? [[x.id, x.h2]] : []).map(([id, h]) => `<a href="${k}.html#${id}">${esc(plain(h))}</a>`).join("");
+  const tree = PAGES.map((k) => `<div class="menu-group"><a class="menu-top" href="${k}.html"${k === key ? ` aria-current="page"` : ""}>${esc(k === "index" ? L.ui.home : L.ui.nav[k])}</a><div class="menu-subs">${subs(k)}</div></div>`).join("");
   const langs = LANGS.map((l) =>
     `<a href="../${l}/${file}" lang="${content[l].htmlLang}" hreflang="${content[l].htmlLang}" data-lang="${l}"${l === L.lang ? ` aria-current="true"` : ""} title="${esc(content[l].name)}">${content[l].short}</a>`).join("");
   const alt = LANGS.map((l) => `<link rel="alternate" hreflang="${content[l].htmlLang}" href="${cfg.baseUrl}${l}/${file}">`).join("\n");
@@ -456,7 +461,7 @@ ${alt}
   </div>
   <div class="menu" id="menu" hidden>
     <nav class="wrap menu-in" aria-label="${esc(L.ui.menu)}">
-      ${nav("")}
+      ${tree}
       <a class="menu-phone" href="${tel}">${icon("phone")}<span>${esc(cfg.phoneDisplay)}</span></a>
     </nav>
   </div>
