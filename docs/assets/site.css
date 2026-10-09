@@ -735,3 +735,21 @@ h2 { font-size: clamp(1.9rem, 1.1rem + 3.4vw, 3.9rem); }
 .menu-in .menu-subs a { display: block; padding: 7px 0; border: 0; font-weight: 600; font-size: .96rem; letter-spacing: 0; line-height: 1.35; color: var(--mut-night); }
 .menu-in .menu-subs a:hover { color: #fff; }
 .menu-in .menu-phone { grid-column: 1 / -1; }
+
+/* Шапки внутренних страниц — кадр во весь экран, как на главной */
+.phead { position: relative; isolation: isolate; overflow: hidden; display: grid; align-items: end; min-height: min(88svh, 840px); padding-bottom: clamp(36px, 6vh, 76px); background: var(--night); }
+.phead-bg { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 42%; animation: cam 30s ease-in-out infinite alternate; }
+.phead::before { content: ""; position: absolute; inset: 0; z-index: -1; background:
+  linear-gradient(180deg, rgba(3, 7, 20, .74) 0%, rgba(3, 7, 20, .2) 30%, rgba(3, 7, 20, .34) 56%, rgba(5, 11, 31, 1) 100%),
+  linear-gradient(90deg, rgba(3, 7, 20, .72) 0%, rgba(3, 7, 20, 0) 68%); }
+.phead-copy { max-width: 960px; }
+.phead h1 { font-size: clamp(2.3rem, 1rem + 4.4vw, 4.8rem); line-height: 1; text-shadow: 0 2px 30px rgba(3, 7, 20, .55); }
+:lang(th) .phead h1 { line-height: 1.25; }
+.phead .lead { color: #DCE3F8; text-shadow: 0 1px 18px rgba(3, 7, 20, .7); }
+.phead .crumbs { color: #C9D2EF; }
+.phead .btn-ghost { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+@media (min-width: 960px) { .phead-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .phead-bg { animation: none; } }
+
+/* Узкий телефон: в шапке остаётся «BST», иначе кнопка меню уезжает за край */
+@media (max-width: 430px) { .hdr .logo span { display: none; } .hdr-in { gap: 12px; padding-left: 16px; } }

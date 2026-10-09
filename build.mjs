@@ -131,7 +131,8 @@ const R = {
 
   head(s, L, key) {
     return `
-<section class="phead night" data-rays="0.8">
+<section class="phead night">
+  <img class="phead-bg" src="../assets/img/t-${s.k}.webp" alt="" width="1200" height="1200" fetchpriority="high" aria-hidden="true">
   <div class="wrap phead-grid">
     <div class="phead-copy">
       <nav class="crumbs" aria-label="${esc(L.ui.home)}"><a href="index.html">${esc(L.ui.home)}</a><span aria-hidden="true">/</span><span aria-current="page">${esc(L.ui.nav[key])}</span></nav>
@@ -142,7 +143,6 @@ const R = {
         <a class="btn btn-ghost btn-lg" data-track="Contact" target="_blank" rel="noopener" href="${waLink(L.quiz.msgHead)}">${icon("whatsapp-logo")}<span>${esc(L.ui.wa)}</span></a>
       </div>
     </div>
-    <div class="phead-vis pv-${s.k}">${VIS[s.k]}</div>
   </div>
 </section>`;
   },

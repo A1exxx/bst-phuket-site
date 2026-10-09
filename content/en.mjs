@@ -140,7 +140,7 @@ export default {
       "sections": [
         {
           "type": "hero",
-          "h1": "Signs and outdoor advertising {in Phuket}",
+          "h1": "Signs the {whole island} can see",
           "lead": "Channel letters, light boxes, neon, LED screens and advertising robots. Design, production and installation: one company in Chalong.",
           "try": "Type your business name and see your sign",
           "facts": [
