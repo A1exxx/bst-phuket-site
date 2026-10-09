@@ -344,10 +344,10 @@
     if (tier && !quiz.elements.note.value) quiz.elements.note.value = tier.dataset.note;
   });
 
-  // --- Первый экран: название из поля появляется на вывеске в кадре; по названию сайт угадывает бизнес и дорисовывает пример рекламы ---
+  // --- Название из поля появляется на вывеске в кадре (главная и «Вывески»). На главной сайт ещё угадывает бизнес по названию и дорисовывает пример рекламы ---
   const plate = $("[data-plate]"), plateInput = $("[data-plate-input]");
   if (plate) {
-    const box = plate.parentElement, art = $(".plate-art", box), slogan = $("[data-slogan]", box), ctx = art.getContext("2d");
+    const box = plate.parentElement, art = $(".plate-art", box), slogan = $("[data-slogan]", box), ctx = art?.getContext("2d");
     const images = {};
     let board = null, boardLoading = null, kind = "", drawTimer = 0, waitTimer = 0;
     // Слова и примеры рекламы лежат в отдельном файле и подгружаются, когда человек начал печатать
@@ -357,6 +357,7 @@
       const n = Math.max(plate.textContent.length, 4), withArt = box.classList.contains("has-art");
       const size = Math.min(box.offsetHeight * (withArt ? 0.3 : 0.56), (box.offsetWidth * (withArt ? 0.84 : 0.92)) / (n * 0.7));
       plate.style.fontSize = `${size.toFixed(1)}px`;
+      if (!slogan) return;
       const fit = (box.offsetWidth * 0.8) / (Math.max(slogan.textContent.length, 8) * 0.6);
       slogan.style.fontSize = `${Math.max(6, Math.min(size * 0.5, fit)).toFixed(1)}px`;
     }
@@ -416,6 +417,7 @@
       plate.textContent = name || T.sample;
       fitPlate();
       $$("[data-stage-input]").forEach((i) => { i.value = plateInput.value; i.dispatchEvent(new Event("input", { bubbles: true })); });
+      if (!art) return; // вывеска без примера рекламы — только название
       clearTimeout(waitTimer);
       waitTimer = setTimeout(() => { // ждём, пока человек допечатает слово
         if (name.length < 3) return show("");
@@ -425,7 +427,72 @@
     addEventListener("resize", () => { fitPlate(); if (kind && images[kind]?.naturalWidth) paint(images[kind], true); });
     document.fonts?.ready.then(fitPlate);
     fitPlate();
+    // «Вывески»: кадр ставится так, чтобы вывеска попала в просвет между заголовком и полем ввода — на любом экране и языке
+    const gap = $("[data-plate-gap]");
+    if (gap) {
+      const head = gap.closest(".phead");
+      const place = () => {
+        const g = gap.getBoundingClientRect(), s = head.getBoundingClientRect();
+        head.style.setProperty("--y0", `${Math.round(g.top + g.height / 2 - s.top)}px`);
+        fitPlate();
+      };
+      const ro = new ResizeObserver(place);
+      ro.observe(head); ro.observe(gap);
+      place();
+    }
   }
+
+  // --- Вкладки разделов: на странице виден один раздел, остальные открываются по нажатию ---
+  $$("[data-deck]").forEach((deck) => {
+    const barBox = $(".deck-bar", deck), bar = $(".deck-tabs", deck), tabs = $$(".deck-tab", bar);
+    const panels = tabs.map((t) => document.getElementById(t.getAttribute("aria-controls")));
+    function open(i, { jump = false, focus = false } = {}) {
+      tabs.forEach((t, n) => {
+        const on = n === i;
+        t.setAttribute("aria-selected", on);
+        t.tabIndex = on ? 0 : -1;
+        panels[n].classList.toggle("is-on", on);
+      });
+      const tab = tabs[i];
+      bar.scrollTo({ left: tab.offsetLeft - (bar.clientWidth - tab.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
+      if (focus) tab.focus({ preventScroll: true });
+      // Новый раздел читают с начала: если страница прокручена ниже полосы вкладок, возвращаемся к ней
+      const y = Math.round(deck.getBoundingClientRect().top + scrollY - parseFloat(getComputedStyle(barBox).top));
+      if (jump || scrollY > y) scrollTo({ top: y, behavior: "instant" });
+    }
+    const pick = (i, opts) => { open(i, opts); history.replaceState(null, "", `#${panels[i].id}`); };
+    const byHash = () => panels.findIndex((p) => `#${p.id}` === location.hash);
+    tabs.forEach((t, i) => {
+      t.addEventListener("click", (e) => { e.preventDefault(); pick(i); });
+      t.addEventListener("keydown", (e) => {
+        if (e.key === " ") { e.preventDefault(); return pick(i); }
+        const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+        if (to === undefined) return;
+        e.preventDefault();
+        pick((to + tabs.length) % tabs.length, { focus: true });
+      });
+    });
+    // Ссылка на раздел (из меню, из кнопки «Дальше», из другой страницы) открывает его вкладку
+    addEventListener("hashchange", () => { const i = byHash(); if (i >= 0) open(i, { jump: true, focus: true }); });
+    const fromLink = () => { const i = byHash(); if (i >= 0) open(i, { jump: true }); };
+    fromLink();
+    addEventListener("load", fromLink, { once: true }); // после загрузки картинок и шрифтов высота блоков выше могла измениться
+  });
+
+  // --- «Объёмные буквы»: цвет свечения на кадре в шапке; тот же цвет получает вывеска в конструкторе ниже ---
+  $$("[data-tint]").forEach((root) => root.addEventListener("change", (e) => {
+    if (e.target.name !== "tint") return;
+    root.style.setProperty("--tint", e.target.value);
+    root.classList.toggle("is-tinted", !e.target.hasAttribute("data-off"));
+    const same = $(`input[name^="color-"][value="${e.target.value}"]`);
+    if (same) { same.checked = true; same.dispatchEvent(new Event("change", { bubbles: true })); }
+  }));
+
+  // --- Карта в контактах: на телефоне открывается по кнопке, чтобы не удлинять страницу ---
+  $$("[data-map-toggle]").forEach((b) => b.addEventListener("click", () => {
+    const on = $(`#${b.getAttribute("aria-controls")}`).classList.toggle("is-open");
+    b.setAttribute("aria-expanded", on);
+  }));
 
   // --- Крупная фраза перед заявкой: слова «зажигаются» по мере прокрутки ---
   $$("[data-scrub]").forEach((el) => {

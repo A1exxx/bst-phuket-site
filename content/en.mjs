@@ -30,7 +30,10 @@ export default {
     "no": "not compatible",
     "tableHint": "Scroll the table sideways",
     "execLabel": "Build options",
-    "photoNote": "Illustration"
+    "photoNote": "Illustration",
+    "sections": "Page sections",
+    "next": "Next",
+    "mapShow": "Show map"
   },
   "stage": {
     "label": "Your business name",
@@ -140,6 +143,7 @@ export default {
       "sections": [
         {
           "type": "hero",
+          "tab": "Sign builder",
           "h1": "Signs the {whole island} can see",
           "lead": "Channel letters, light boxes, neon, LED screens and advertising robots. Design, production and installation: one company in Chalong.",
           "try": "Type your business name and see your sign",
@@ -210,6 +214,7 @@ export default {
         {
           "type": "model",
           "id": "anatomy",
+          "tab": "3D letter",
           "tone": "night",
           "h2": "What’s inside a {channel letter}",
           "lead": "Spin the model and pull it apart layer by layer: this is how a face-lit letter is built.",
@@ -242,6 +247,7 @@ export default {
         {
           "type": "place",
           "id": "place",
+          "tab": "Where to place",
           "tone": "paper",
           "h2": "Where will {your sign} go?",
           "lead": "Everything depends on the location: letter size, materials, fixings and price.",
@@ -285,6 +291,7 @@ export default {
         {
           "type": "duo",
           "id": "hits",
+          "tab": "Hits & new",
           "tone": "night",
           "a": {
             "h2": "Best {sellers}",
@@ -332,6 +339,7 @@ export default {
         {
           "type": "feature",
           "id": "robots",
+          "tab": "Robot",
           "tone": "blue",
           "img": "r-night",
           "h2": "An advertising robot {calls in customers} while you work",
@@ -352,6 +360,7 @@ export default {
         {
           "type": "list",
           "id": "more",
+          "tab": "More services",
           "tone": "paper",
           "h2": "More than signs: {any advertising}",
           "lead": "Street, online and packaging: one style, one team.",
@@ -378,6 +387,7 @@ export default {
         {
           "type": "steps",
           "id": "process",
+          "tab": "How we work",
           "tone": "paper",
           "h2": "How we {work}",
           "items": [
@@ -406,6 +416,7 @@ export default {
         {
           "type": "faq",
           "id": "faq",
+          "tab": "FAQ",
           "tone": "paper",
           "h2": "Common {questions}",
           "items": [
@@ -450,6 +461,7 @@ export default {
         {
           "type": "place",
           "id": "types",
+          "tab": "Where to place",
           "tone": "paper",
           "h2": "Three locations: {three different} signs",
           "lead": "Letters that look the same on a facade, on a roof and in a showroom are built differently.",
@@ -559,6 +571,7 @@ export default {
         {
           "type": "table",
           "id": "compare",
+          "tab": "Compare",
           "tone": "paper",
           "h2": "How they {differ}",
           "cols": [
@@ -603,6 +616,7 @@ export default {
         {
           "type": "list",
           "id": "neon",
+          "tab": "Neon",
           "tone": "night",
           "h2": "{Neon} signs",
           "lead": "Modern neon is flexible LED neon: it doesn't break, barely heats up and runs on low voltage.",
@@ -624,6 +638,7 @@ export default {
         {
           "type": "list",
           "id": "lightbox",
+          "tab": "Lightboxes",
           "tone": "paper",
           "h2": "Light {boxes}",
           "lead": "The whole face with the image glows. Suits logos, menus and advertising posters.",
@@ -650,6 +665,7 @@ export default {
         {
           "type": "list",
           "id": "billboard",
+          "tab": "Billboards",
           "tone": "paper",
           "h2": "Billboards: the {economy option} for large formats",
           "lead": "The most affordable way to take over a large area.",
@@ -672,6 +688,7 @@ export default {
         {
           "type": "list",
           "id": "also",
+          "tab": "More",
           "tone": "paper",
           "h2": "More for {signs}",
           "items": [
@@ -708,6 +725,7 @@ export default {
           "type": "demo",
           "k": "lighting",
           "id": "lighting",
+          "tab": "Lighting",
           "tone": "night",
           "h2": "{Lighting} options",
           "lead": "Type in your name and switch between types: the difference is visible straight away."
@@ -715,6 +733,7 @@ export default {
         {
           "type": "model",
           "id": "anatomy",
+          "tab": "3D model",
           "tone": "night",
           "h2": "What’s inside a {channel letter}",
           "lead": "Spin the model and pull it apart layer by layer: this is how a face-lit letter is built.",
@@ -747,6 +766,7 @@ export default {
         {
           "type": "list",
           "id": "nolight",
+          "tab": "Unlit",
           "tone": "paper",
           "h2": "Letters {without lighting}",
           "lead": "For interiors and for businesses that trade in daylight.",
@@ -769,6 +789,7 @@ export default {
         {
           "type": "list",
           "id": "materials",
+          "tab": "Materials",
           "tone": "paper",
           "h2": "Material {options}",
           "lead": "Phuket's climate means sun, downpours and salt in the air. We choose the material based on where the sign will stand.",
@@ -802,6 +823,7 @@ export default {
         {
           "type": "tiers",
           "id": "tiers",
+          "tab": "Three tiers",
           "tone": "paper",
           "h2": "Three {build levels}",
           "lead": "The same lettering can be made at three budgets. We quote all three. You choose.",
@@ -841,6 +863,7 @@ export default {
         {
           "type": "table",
           "id": "compat",
+          "tab": "Combinations",
           "tone": "paper",
           "h2": "What {goes with} what",
           "lead": "Not every lighting type can be done in every material. Halo-lit, for example, can't be combined with face-lit or side-lit.",
@@ -912,6 +935,7 @@ export default {
           "type": "demo",
           "k": "pitch",
           "id": "pitch",
+          "tab": "Pixel pitch",
           "tone": "night",
           "h2": "What pixel pitch {do you need}?",
           "lead": "The smaller the pitch, the sharper the image up close, and the pricier the screen. Move the slider.",
@@ -940,6 +964,7 @@ export default {
         {
           "type": "list",
           "id": "indoor",
+          "tab": "Indoor",
           "tone": "paper",
           "h2": "Indoor {screens}",
           "lead": "For halls, shop windows and reception areas. Fine pitch and moderate brightness so they don't dazzle.",
@@ -961,6 +986,7 @@ export default {
         {
           "type": "list",
           "id": "outdoor",
+          "tab": "Outdoor",
           "tone": "paper",
           "h2": "Outdoor {screens}",
           "lead": "Bright enough to read in sunlight and protected from downpours.",
@@ -982,6 +1008,7 @@ export default {
         {
           "type": "list",
           "id": "custom",
+          "tab": "Custom",
           "tone": "night",
           "h2": "Custom {screens}",
           "lead": "When a rectangle on a wall isn't your format.",
@@ -1024,6 +1051,7 @@ export default {
         {
           "type": "list",
           "id": "quality",
+          "tab": "Quality",
           "tone": "paper",
           "h2": "Print {quality}",
           "items": [
@@ -1040,6 +1068,7 @@ export default {
         {
           "type": "list",
           "id": "banner",
+          "tab": "Banner",
           "tone": "paper",
           "h2": "{Banner}",
           "lead": "The main material for billboards, span banners and temporary advertising.",
@@ -1061,6 +1090,7 @@ export default {
         {
           "type": "list",
           "id": "film",
+          "tab": "Film",
           "tone": "paper",
           "h2": "{Film}",
           "lead": "Self-adhesive films for shop windows, signs, walls and vehicles.",
@@ -1095,6 +1125,7 @@ export default {
         {
           "type": "feature",
           "id": "files",
+          "tab": "No file?",
           "tone": "blue",
           "img": "",
           "h2": "No file {for print}?",
@@ -1122,6 +1153,7 @@ export default {
         {
           "type": "list",
           "id": "start",
+          "tab": "Where to start",
           "tone": "paper",
           "h2": "Where to {start}",
           "items": [
@@ -1140,6 +1172,7 @@ export default {
         {
           "type": "list",
           "id": "projectors",
+          "tab": "Projectors",
           "tone": "night",
           "h2": "Projectors and {projection advertising}",
           "lead": "Advertising with light: no structure on the facade.",
@@ -1161,6 +1194,7 @@ export default {
         {
           "type": "list",
           "id": "holo",
+          "tab": "Holograms",
           "tone": "night",
           "h2": "Holographic {screens}",
           "items": [
@@ -1177,6 +1211,7 @@ export default {
         {
           "type": "list",
           "id": "fans",
+          "tab": "LED fans",
           "tone": "night",
           "h2": "LED {fans}",
           "items": [
@@ -1189,6 +1224,7 @@ export default {
         {
           "type": "list",
           "id": "moving",
+          "tab": "Moving",
           "tone": "paper",
           "h2": "Moving {advertising}",
           "lead": "Mechanics that catch the eye.",
@@ -1214,6 +1250,7 @@ export default {
         {
           "type": "list",
           "id": "mobile",
+          "tab": "Mobile",
           "tone": "paper",
           "h2": "Mobile {advertising}",
           "lead": "Structures you can move and set up wherever your customers are today.",
@@ -1265,6 +1302,7 @@ export default {
         {
           "type": "list",
           "id": "want",
+          "tab": "Options",
           "tone": "paper",
           "h2": "You {want to}",
           "items": [
@@ -1289,6 +1327,7 @@ export default {
         {
           "type": "list",
           "id": "models",
+          "tab": "Models",
           "tone": "night",
           "h2": "Robot {models}",
           "items": [
@@ -1309,6 +1348,7 @@ export default {
         {
           "type": "gallery",
           "id": "real",
+          "tab": "Photos",
           "tone": "paper",
           "h2": "Our robots {at work}",
           "lead": "Real photos: figures holding client posters and our own.",
@@ -1342,6 +1382,7 @@ export default {
         {
           "type": "feature",
           "id": "look",
+          "tab": "Why it works",
           "tone": "blue",
           "img": "r-night",
           "h2": "People {notice} it and remember it",
@@ -1361,6 +1402,7 @@ export default {
         {
           "type": "steps",
           "id": "how",
+          "tab": "How it works",
           "tone": "paper",
           "h2": "How it {works}",
           "items": [
@@ -1397,6 +1439,7 @@ export default {
         {
           "type": "list",
           "id": "brand",
+          "tab": "Branding",
           "tone": "paper",
           "h2": "{Branding}",
           "lead": "A complete approach to the exterior and interior of your business.",
@@ -1423,6 +1466,7 @@ export default {
         {
           "type": "list",
           "id": "design",
+          "tab": "Design",
           "tone": "night",
           "h2": "{Design}",
           "lead": "A good sign starts with a mock-up. A bad mock-up won't be saved by expensive material or bright lighting.",

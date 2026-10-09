@@ -805,3 +805,172 @@ h2 { font-size: clamp(1.8rem, 1.1rem + 2.5vw, 3.1rem); }
   .as-launch { transition: opacity .3s, transform .3s var(--ease); }
   .dock:not(.is-on) ~ .as-root:not(.as-open) .as-launch { opacity: 0; pointer-events: none; transform: translateY(12px); }
 }
+
+
+/* ================= 09.10.2026 (2): короткие страницы — разделы вкладками, плотная вёрстка под телефон ================= */
+
+/* Вкладки разделов: на странице виден один раздел; полоса вкладок прилипает под шапкой */
+.deck { position: relative; background: var(--night); }
+.deck-bar { position: sticky; top: calc(var(--hdr-h) + var(--hdr-top)); z-index: 30; padding: 6px 0; pointer-events: none; }
+.deck-tabs { position: relative; display: flex; gap: 2px; width: fit-content; max-width: 100%; padding: 4px; border-radius: 19px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; pointer-events: auto;
+  background: rgba(6, 12, 34, .95);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1), inset 0 1px 0 rgba(255, 255, 255, .2), 0 18px 40px -24px rgba(0, 0, 0, .85); }
+.deck-tabs::-webkit-scrollbar { display: none; }
+.deck-tab { flex: none; display: inline-flex; align-items: center; min-height: 44px; padding: 8px 16px; border-radius: 15px; font-weight: 700; font-size: .92rem; line-height: 1.2; white-space: nowrap; text-decoration: none; color: #C9D2EF; transition: background .2s, color .2s; }
+.deck-tab:hover { color: #fff; }
+.deck-tab[aria-selected="true"] { background: #fff; color: var(--night); }
+.deck-tab:focus-visible { outline-offset: -3px; border-radius: 15px; }
+.deck-tab[aria-selected="true"]:focus-visible { outline-color: var(--blue); }
+.js .deck > [data-panel]:not(.is-on) { display: none; }
+.js .deck > .is-on { animation: panelin .5s var(--ease); }
+@keyframes panelin { from { opacity: 0; transform: translateY(12px); } }
+.deck > .sec { padding: clamp(26px, 4vw, 56px) 0 clamp(40px, 6vw, 84px); scroll-margin-top: 64px; }
+.deck > .sec.paper + .sec.paper, .deck > .sec.night + .sec.night { padding-top: clamp(26px, 4vw, 56px); }
+.deck > .sec.paper + .sec.paper > .wrap, .deck > .sec.night + .sec.night > .wrap { border-top: 0; padding-top: 0; }
+.deck-next { display: flex; margin-top: clamp(26px, 4vw, 44px); }
+.deck-next .btn { max-width: 100%; }
+.deck-next .btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (min-width: 960px) { .deck .split > .sec-head { top: calc(var(--hdr-h) + var(--hdr-top) + 84px); } }
+@media (min-width: 720px) { .deck .rows-num li, .deck .rows-num li:last-child { top: calc(var(--hdr-h) + var(--hdr-top) + 86px + var(--n) * 16px); } }
+
+/* «Вывески»: ночная улица во всю шапку, название клиента — на вывеске в кадре. Кадр ставится так, чтобы вывеска попала в просвет между заголовком и полем ввода (--y0 считает скрипт) */
+.phead-shot { --px: .434; --py: .454; --ax: .46; --h: min(88svh, 840px); --w: max(108vw, calc(var(--h) * 1.16)); --y0: calc(var(--h) * .56); min-height: var(--h); align-items: stretch; }
+.phead-shot .shot { position: absolute; z-index: -2; width: var(--w); height: var(--w); left: calc(var(--ax) * 100vw - var(--px) * var(--w)); top: calc(var(--y0) - var(--py) * var(--w)); }
+.phead-shot .cam { position: absolute; inset: 0; transform-origin: 43.4% 45.4%; animation: cam 30s ease-in-out infinite alternate; }
+.phead-shot .cam img { width: 100%; height: 100%; max-width: none; }
+.phead-shot .plate { position: absolute; left: 36.1%; top: 42.6%; width: 14.6%; height: 5.6%; display: grid; place-items: center; overflow: hidden; }
+.phead-shot .plate span { font-weight: 900; line-height: 1; letter-spacing: -.02em; white-space: nowrap; text-transform: uppercase; color: #1E0B00; mix-blend-mode: multiply; opacity: .88; }
+.phead-shot::before { background: linear-gradient(180deg, rgba(3, 7, 20, .74) 0, rgba(3, 7, 20, .52) calc(var(--y0) - 170px), rgba(3, 7, 20, 0) calc(var(--y0) - 64px), rgba(3, 7, 20, 0) calc(var(--y0) + 64px), rgba(5, 11, 31, .74) calc(var(--y0) + 180px), var(--night) 100%); }
+.phead-shot .phead-grid { align-items: stretch; }
+.phead-shot .phead-copy { display: flex; flex-direction: column; max-width: none; }
+.phead-shot .lead { max-width: 46ch; }
+.plate-gap { flex: 1 0 140px; }
+.phead-field { width: min(100%, 460px); }
+.phead-field > span { color: #DCE3F8; }
+.phead-field input { min-height: 56px; border: 0; background: rgba(6, 12, 34, .55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .22); }
+.phead-shot .cta-row { margin-top: 14px; }
+@media (min-width: 701px) and (max-height: 760px) { .phead-shot .lead { display: none; } }
+@media (prefers-reduced-motion: reduce) { .phead-shot .cam { animation: none; } }
+
+/* «Объёмные буквы»: крупный план буквы, цвет свечения выбирается кружками */
+.phead-tint .phead-bg { object-position: 42% 50%; }
+.phead-tint .tint { position: absolute; inset: 0; z-index: -2; background: var(--tint, #ffd9a8); mix-blend-mode: color; opacity: 0; transition: opacity .7s var(--ease), background .7s; }
+.phead-tint.is-tinted .tint { opacity: .92; }
+.phead-tint::before { background:
+  linear-gradient(180deg, rgba(3, 7, 20, .72) 0%, rgba(3, 7, 20, .12) 30%, rgba(3, 7, 20, .46) 58%, var(--night) 100%),
+  linear-gradient(90deg, rgba(3, 7, 20, .62) 0%, rgba(3, 7, 20, .12) 62%, rgba(3, 7, 20, 0) 100%); }
+.phead-swatches { margin-top: 24px; }
+.phead-swatches legend { color: #DCE3F8; }
+.phead-tint .cta-row { margin-top: 22px; }
+
+/* Контакты: соцсети в одну строку, карта на телефоне открывается кнопкой */
+.follow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.follow .social { margin-top: 0; }
+.map { display: grid; gap: 14px; }
+.map .map-line { order: 2; margin-top: 0; }
+.map-toggle { display: none; align-items: center; margin-left: auto; min-height: 44px; padding: 8px 16px; border: 0; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; font-size: .92rem; cursor: pointer; }
+.map-toggle[aria-expanded="true"] { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+@media (max-width: 959px) {
+  .map .map-line { order: 0; }
+  .map-toggle { display: inline-flex; }
+  .map-box:not(.is-open) { display: none; }
+}
+
+/* Крупная фраза — только на широком экране */
+@media (max-width: 899px) { .manifesto { display: none; } }
+
+/* Каталог на телефоне и планшете — плотная сетка в две колонки; подвал короче */
+@media (max-width: 899px) {
+  .bento { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .bento .tile { min-height: clamp(128px, 34vw, 250px); padding: 14px; border-radius: 18px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .1); }
+  .tile-txt { gap: 4px; }
+  .tile-txt strong { font-size: clamp(1rem, .6rem + 1.9vw, 1.5rem); letter-spacing: -.01em; line-height: 1.15; overflow-wrap: anywhere; }
+  .tile-txt span { font-size: .88rem; }
+  .tile-go { top: 10px; right: 10px; width: 32px; height: 32px; }
+  .tile-go .ic { width: 15px; height: 15px; }
+  .tile-branding { grid-column: 1 / -1; min-height: 104px; }
+  .ftr { padding: 36px 0 104px; }
+  .ftr-grid { gap: 22px; }
+  .ftr nav { grid-template-columns: 1fr 1fr; column-gap: 16px; }
+  .ftr nav h2 { grid-column: 1 / -1; }
+  .ftr-contact { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .ftr-base { margin-top: 22px; padding-top: 16px; }
+}
+@media (max-width: 599px) { .tile-txt span { display: none; } }
+
+/* Телефон: меньше воздуха, длинные наборы листаются вбок, а не уходят вниз */
+@media (max-width: 700px) {
+  .sec { padding: 46px 0; }
+  .sec.night + .sec.quote { padding-top: 46px; }
+  .sec-head { margin-bottom: 22px; }
+  .sec-head .lead { margin-top: 12px; }
+  h2 { font-size: 1.7rem; }
+  .quote h2 { font-size: 1.9rem; }
+  .deck > .sec, .deck > .sec.paper + .sec.paper, .deck > .sec.night + .sec.night { padding: 22px 0 38px; }
+  .deck-next .btn { width: 100%; }
+  .rows li { padding: 16px 0; }
+
+  /* Шапки страниц: главная кнопка во всю ширину, WhatsApp — значком рядом */
+  .phead { min-height: 0; padding-bottom: 26px; }
+  .phead .lead { margin-top: 14px; font-size: 1rem; }
+  .phead .cta-row { margin-top: 22px; }
+  .phead .cta-row, .cine-bottom .cta-row { flex-wrap: nowrap; }
+  .phead .cta-row .btn-accent, .cine-bottom .cta-row .btn-accent { flex: 1 1 auto; min-width: 0; padding-inline: 20px; }
+  .phead .cta-row .btn-ghost, .cine-bottom .cta-row .btn-ghost { position: relative; flex: none; width: 56px; padding: 0; }
+  .phead .cta-row .btn-ghost span, .cine-bottom .cta-row .btn-ghost span, .social a span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .phead .cta-row .btn-ghost .ic, .cine-bottom .cta-row .btn-ghost .ic { width: 24px; height: 24px; }
+  .phead-shot { --ax: .5; --h: max(100svh, 620px); --w: max(calc(var(--h) * 1.16), min(310vw, 1500px)); --y0: calc(var(--h) * .52); min-height: var(--h); }
+  .phead-shot .lead { display: none; }
+  .plate-gap { flex-basis: 104px; }
+  .phead-field { width: 100%; }
+  .phead-tint { min-height: min(90svh, 700px); }
+
+  /* Наборы кнопок-капсул — лентой, которую листают вбок */
+  .stage-ui .chips-row, .chips-many .chips-row { display: grid; grid-auto-flow: column; grid-auto-columns: max-content; gap: 8px; padding: 4px 2px 6px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; }
+  .chips-many .chips-row { grid-template-rows: auto auto; }
+  .stage-ui .chips-row::-webkit-scrollbar, .chips-many .chips-row::-webkit-scrollbar { display: none; }
+  .stage-ui .chips-row .chip, .chips-many .chips-row .chip { margin: 0; }
+  .stage-note { min-height: 0; }
+
+  /* Два столбца «хиты и новинки» и три уровня исполнения — карточками, которые листают вбок */
+  .duo, .tiers { grid-auto-flow: column; grid-template-columns: none; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: calc(-1 * var(--gut)); padding-inline: var(--gut); scroll-padding-inline: var(--gut); }
+  .duo::-webkit-scrollbar, .tiers::-webkit-scrollbar { display: none; }
+  .duo { grid-auto-columns: 86%; gap: 22px; width: 100%; margin-inline: 0; }
+  .tiers { grid-auto-columns: 82%; gap: 12px; }
+  .duo-col, .tier { scroll-snap-align: start; }
+  .tier { padding: 22px; }
+  .duo h2 { margin-bottom: 16px; font-size: 1.5rem; }
+
+  /* 3D-буква: части — кнопками в два столбца, описание открывается у нажатой */
+  .parts { grid-template-columns: 1fr 1fr; margin-bottom: 14px; }
+  .part { padding: 12px 14px; }
+  .part strong { font-size: .98rem; }
+  .part span { display: none; }
+  .part[aria-pressed="true"] { grid-column: 1 / -1; }
+  .part[aria-pressed="true"] span { display: block; }
+  .model-view { aspect-ratio: 5 / 4; }
+
+  /* Заявка и контакты */
+  .quote-grid { gap: 22px; }
+  .quote-copy .lead { margin-top: 12px; font-size: 1rem; }
+  .bigphone { margin-top: 16px; }
+  .quiz { gap: 16px; padding: 16px; }
+  .field textarea { min-height: 76px; }
+  .contacts-grid { gap: 18px; }
+  .contacts-copy .lead { display: none; }
+  .channels { grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 18px 0; }
+  .channels a, .channels button { flex-direction: column; justify-content: center; gap: 6px; min-height: 70px; padding: 10px 2px; font-size: .78rem; }
+  .channels .ic { width: 24px; height: 24px; }
+  .social a { position: relative; width: 44px; padding: 0; justify-content: center; }
+  .social a .ic { width: 20px; height: 20px; }
+}
+
+/* Скрытые подписи в ячейках таблицы остаются внутри прокручиваемой рамки — иначе на телефоне они растягивали страницу вбок */
+.tablewrap { position: relative; }
+
+/* Телефон: главная кнопка в шапке — в одну строку, без кружка со стрелкой */
+@media (max-width: 700px) { .phead .cta-row .btn-arrow, .cine-bottom .cta-row .btn-arrow { display: none; } }
+
+/* Верхнее меню строкой помещается только на широком экране: на остальных разделы открывает кнопка меню. Раньше на ширине 1420–1560 кнопки вылезали за край панели */
+@media (max-width: 1559px) { .nav { display: none; } .hdr-tools { margin-left: auto; } }
+@media (min-width: 1560px) { .hdr-in { width: min(100% - 2 * var(--gut), 1420px); } }

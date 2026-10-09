@@ -62,6 +62,11 @@ for (const [name, src] of Object.entries(html)) {
   for (const [, asset] of src.matchAll(/(?:src|href)="\.\.\/(assets\/[^"?]+)/g)) {
     if (!existsSync(path.join(ROOT, "docs", asset))) errors.push(`${name}: нет файла ${asset}`);
   }
+  // Вкладки разделов: у каждой вкладки свой раздел, в том же порядке; изначально открыт ровно один
+  const tabs = [...src.matchAll(/class="deck-tab"[^>]*aria-controls="([^"]+)"/g)].map((m) => m[1]);
+  const panels = [...src.matchAll(/<section data-panel role="tabpanel" aria-labelledby="tab-([^"]+)" class="(is-on )?/g)];
+  if (tabs.length < 2 || tabs.join() !== panels.map((m) => m[1]).join()) errors.push(`${name}: вкладки и разделы не совпадают`);
+  if (panels.filter((m) => m[2]).length !== 1) errors.push(`${name}: изначально открыт должен быть ровно один раздел`);
 }
 if (!existsSync(path.join(ROOT, "docs", "index.html"))) errors.push("нет корневой страницы docs/index.html");
 

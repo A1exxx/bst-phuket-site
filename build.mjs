@@ -68,7 +68,7 @@ function stage(L, id, modes, labels, legend, withNotes, auto) {
   <div class="stage-ui">
     <label class="field"><span>${esc(s.label)}</span>
       <input type="text" maxlength="24" placeholder="${esc(s.placeholder)}" autocomplete="off" autocapitalize="characters" spellcheck="false" data-stage-input></label>
-    <fieldset class="chips"><legend>${esc(legend)}</legend>${chips}</fieldset>
+    <fieldset class="chips"><legend>${esc(legend)}</legend><div class="chips-row">${chips}</div></fieldset>
     <fieldset class="swatches"><legend>${esc(s.colorTitle)}</legend>${sw}</fieldset>
     ${withNotes ? `<p class="stage-note" data-stage-note aria-live="polite"></p>` : ""}
     <a class="btn btn-accent" data-stage-cta data-track="Contact" target="_blank" rel="noopener" href="${waLink(L.quiz.msgHead)}">${icon("whatsapp-logo")}<span>${esc(s.cta)}</span></a>
@@ -117,8 +117,13 @@ const R = {
       </div>
     </div>
   </div>
-</section>
-<section class="sec night demo-light stage-sec" id="try">
+</section>`;
+  },
+
+  // Конструктор вывески — первая вкладка на главной; тексты берёт из блока первого экрана
+  trial(s, L) {
+    return `
+<section class="sec night demo-light stage-sec" id="${s.id}">
   <div class="wrap">
     <header class="sec-head rv"><h2>${esc(s.try)}</h2><ul class="facts">${s.facts.map((f) => `<li>${icon("check")}<span>${esc(f)}</span></li>`).join("")}</ul></header>
     ${stage(L, "hero", ["face", "halo", "neon", "box", "led"], L.stage.modes, L.stage.modesTitle, false, true)}
@@ -132,18 +137,47 @@ const R = {
   },
 
   head(s, L, key) {
+    const copy = `
+      <nav class="crumbs" aria-label="${esc(L.ui.home)}"><a href="index.html">${esc(L.ui.home)}</a><span aria-hidden="true">/</span><span aria-current="page">${esc(L.ui.nav[key])}</span></nav>
+      <h1>${acc(s.h1)}</h1>
+      <p class="lead">${esc(s.lead)}</p>`;
+    const cta = `
+      <div class="cta-row">
+        <a class="btn btn-accent btn-lg" href="#quote"><span>${esc(L.ui.quote)}</span>${ARROW()}</a>
+        <a class="btn btn-ghost btn-lg" data-track="Contact" target="_blank" rel="noopener" href="${waLink(L.quiz.msgHead)}">${icon("whatsapp-logo")}<span>${esc(L.ui.wa)}</span></a>
+      </div>`;
+    // «Вывески»: ночная улица, название клиента появляется на вывеске в кадре
+    if (key === "signs") return `
+<section class="phead phead-shot night">
+  <div class="shot" aria-hidden="true"><div class="cam"><img src="../assets/img/street.webp" alt="" width="1600" height="1600" fetchpriority="high"><div class="plate"><span data-plate>${esc(L.stage.sample)}</span></div></div></div>
+  <div class="wrap phead-grid">
+    <div class="phead-copy">${copy}
+      <div class="plate-gap" data-plate-gap aria-hidden="true"></div>
+      <label class="field phead-field"><span>${esc(L.stage.label)}</span>
+        <input type="text" maxlength="18" placeholder="${esc(L.stage.placeholder)}" autocomplete="off" autocapitalize="characters" spellcheck="false" data-plate-input></label>${cta}
+    </div>
+  </div>
+</section>`;
+    // «Объёмные буквы»: крупный план светящейся буквы, цвет свечения выбирается кружками
+    if (key === "letters") {
+      const sw = Object.entries(COLORS).map(([k, c], i) =>
+        `<label class="swatch" title="${esc(L.stage.colors[k])}"><input type="radio" name="tint" value="${c}"${i === 0 ? " checked data-off" : ""}><span style="--c:${c}"></span><span class="sr">${esc(L.stage.colors[k])}</span></label>`).join("");
+      return `
+<section class="phead phead-tint night" data-tint>
+  <img class="phead-bg" src="../assets/img/h-letters.webp" alt="" width="1600" height="1600" fetchpriority="high" aria-hidden="true">
+  <div class="tint" aria-hidden="true"></div>
+  <div class="wrap phead-grid">
+    <div class="phead-copy">${copy}
+      <fieldset class="swatches phead-swatches"><legend>${esc(L.stage.colorTitle)}</legend>${sw}</fieldset>${cta}
+    </div>
+  </div>
+</section>`;
+    }
     return `
 <section class="phead night">
   <img class="phead-bg" src="../assets/img/${s.k === "robots" ? "r-row" : "t-" + s.k}.webp" alt="" width="1200" height="1200" fetchpriority="high" aria-hidden="true">
   <div class="wrap phead-grid">
-    <div class="phead-copy">
-      <nav class="crumbs" aria-label="${esc(L.ui.home)}"><a href="index.html">${esc(L.ui.home)}</a><span aria-hidden="true">/</span><span aria-current="page">${esc(L.ui.nav[key])}</span></nav>
-      <h1>${acc(s.h1)}</h1>
-      <p class="lead">${esc(s.lead)}</p>
-      <div class="cta-row">
-        <a class="btn btn-accent btn-lg" href="#quote"><span>${esc(L.ui.quote)}</span>${ARROW()}</a>
-        <a class="btn btn-ghost btn-lg" data-track="Contact" target="_blank" rel="noopener" href="${waLink(L.quiz.msgHead)}">${icon("whatsapp-logo")}<span>${esc(L.ui.wa)}</span></a>
-      </div>
+    <div class="phead-copy">${copy}${cta}
     </div>
   </div>
 </section>`;
@@ -359,8 +393,8 @@ function quote(L, key) {
       <a class="bigphone" data-track="Contact" href="${tel}">${icon("phone")}<span>${esc(cfg.phoneDisplay)}</span></a>
     </div>
     <form class="quiz rv" data-quiz novalidate>
-      <fieldset class="chips"><legend>${esc(q.q1)}</legend>${prod}</fieldset>
-      <fieldset class="chips"><legend>${esc(q.q2)}</legend>${place}</fieldset>
+      <fieldset class="chips chips-many"><legend>${esc(q.q1)}</legend><div class="chips-row">${prod}</div></fieldset>
+      <fieldset class="chips"><legend>${esc(q.q2)}</legend><div class="chips-row">${place}</div></fieldset>
       <label class="field"><span>${esc(q.q3)}</span>
         <textarea name="note" rows="3" maxlength="600" aria-describedby="q3hint"></textarea>
         <small id="q3hint">${esc(q.q3hint)}</small></label>
@@ -395,15 +429,39 @@ function contacts(L) {
         <li>${lineBtn}</li>
         <li><a href="${cfg.telegram}" data-track="Contact" target="_blank" rel="noopener">${icon("telegram-logo")}<span>${esc(c.tg)}</span></a></li>
       </ul>
-      <h3>${esc(c.followTitle)}</h3>
-      <ul class="social">${social}</ul>
+      <div class="follow"><h3>${esc(c.followTitle)}</h3><ul class="social">${social}</ul></div>
     </div>
     <div class="map rv">
-      <iframe title="${esc(c.mapTitle)}" src="${cfg.mapEmbed}" loading="lazy" referrerpolicy="no-referrer"></iframe>
-      <p>${icon("map-pin")}<span>${esc(c.place)}</span>${cfg.mapLink ? `<a href="${cfg.mapLink}" target="_blank" rel="noopener">${esc(c.mapOpen)}</a>` : ""}</p>
+      <p class="map-line">${icon("map-pin")}<span>${esc(c.place)}</span>${cfg.mapLink ? `<a href="${cfg.mapLink}" target="_blank" rel="noopener">${esc(c.mapOpen)}</a>` : ""}<button type="button" class="map-toggle" data-map-toggle aria-expanded="false" aria-controls="map-box">${esc(L.ui.mapShow)}</button></p>
+      <div class="map-box" id="map-box"><iframe title="${esc(c.mapTitle)}" src="${cfg.mapEmbed}" loading="lazy" referrerpolicy="no-referrer"></iframe></div>
     </div>
   </div>
 </section>`;
+}
+
+// Разделы страницы — вкладками: виден один, остальные открываются по нажатию, поэтому страница короткая.
+// Блоки первого экрана, ленты и каталога остаются на странице как есть.
+const TOP = new Set(["hero", "head", "marquee", "tiles"]);
+const panelsOf = (p) => p.sections.flatMap((s) =>
+  s.type === "hero" ? [{ ...s, type: "trial", id: "try" }] : TOP.has(s.type) ? [] : [s]);
+
+function deck(panels, L, key) {
+  const tabs = panels.map((s, i) =>
+    `<a class="deck-tab" role="tab" id="tab-${s.id}" href="#${s.id}" aria-controls="${s.id}" aria-selected="${i === 0}"${i === 0 ? "" : ` tabindex="-1"`}>${esc(s.tab)}</a>`).join("");
+  const body = panels.map((s, i) => {
+    const next = panels[i + 1];
+    const go = next
+      ? `<a class="btn btn-line" href="#${next.id}"><span>${esc(L.ui.next)}: ${esc(next.tab)}</span>${icon("arrow-right")}</a>`
+      : `<a class="btn btn-accent" href="#quote"><span>${esc(L.ui.quote)}</span>${icon("arrow-right")}</a>`;
+    return R[s.type](s, L, key)
+      .replace(`<section class="`, `<section data-panel role="tabpanel" aria-labelledby="tab-${s.id}" class="${i === 0 ? "is-on " : ""}`)
+      .replace(/<\/section>\s*$/, `  <div class="wrap deck-next">${go}</div>\n</section>`);
+  }).join("\n");
+  return `
+<div class="deck" data-deck>
+  <div class="deck-bar"><div class="wrap"><div class="deck-tabs" role="tablist" aria-label="${esc(L.ui.sections)}">${tabs}</div></div></div>
+${body}
+</div>`;
 }
 
 // ---------- Каркас страницы ----------
@@ -482,8 +540,9 @@ ${alt}
 </header>
 <div class="hdr-sentinel" aria-hidden="true"></div>
 <main id="main">
-${p.sections.map((s) => R[s.type](s, L, key)).join("\n")}
-<section class="sec night manifesto"><div class="wrap"><p data-scrub>${esc(L.footer.about)}</p></div></section>
+${p.sections.filter((s) => TOP.has(s.type)).map((s) => R[s.type](s, L, key)).join("\n")}
+${deck(panelsOf(p), L, key)}
+${key === "index" ? `<section class="sec night manifesto"><div class="wrap"><p data-scrub>${esc(L.footer.about)}</p></div></section>` : ""}
 ${quote(L, key)}
 ${contacts(L)}
 </main>
