@@ -65,6 +65,16 @@ for (const [name, src] of Object.entries(html)) {
 }
 if (!existsSync(path.join(ROOT, "docs", "index.html"))) errors.push("нет корневой страницы docs/index.html");
 
+// 3. «Умный билборд»: у каждого типа бизнеса есть картинка и строка рекламы на трёх языках
+const board = await load("board");
+for (const [k, v] of Object.entries(board.kinds)) {
+  if (!existsSync(path.join(ROOT, "src", "img", `b-${k}.webp`))) errors.push(`билборд: нет картинки для типа ${k}`);
+  for (const l of LANGS) if (!v.slogan?.[l]) errors.push(`билборд: нет строки ${l} для типа ${k}`);
+  if (!Array.isArray(v.strong) || !Array.isArray(v.weak)) errors.push(`билборд: нет списков слов у типа ${k}`);
+  if (k !== "generic" && !v.strong.length) errors.push(`билборд: пустой список слов у типа ${k}`);
+}
+for (const l of LANGS) if (!existsSync(path.join(ROOT, "docs", "assets", `board.${l}.json`))) errors.push(`билборд: не собран файл слов для ${l}`);
+
 if (errors.length) {
   console.error(`ОШИБОК: ${errors.length}\n` + errors.slice(0, 40).join("\n"));
   process.exit(1);

@@ -348,8 +348,11 @@
   const plate = $("[data-plate]"), plateInput = $("[data-plate-input]");
   if (plate) {
     const box = plate.parentElement, art = $(".plate-art", box), slogan = $("[data-slogan]", box), ctx = art.getContext("2d");
-    const board = B.board, images = {};
-    let kind = "", drawTimer = 0, waitTimer = 0;
+    const images = {};
+    let board = null, boardLoading = null, kind = "", drawTimer = 0, waitTimer = 0;
+    // Слова и примеры рекламы лежат в отдельном файле и подгружаются, когда человек начал печатать
+    const loadBoard = () => boardLoading || (boardLoading = fetch(`../assets/board.${B.lang}.json?v=${B.vBoard}`)
+      .then((r) => r.json()).then((d) => { board = d.kinds; }));
     function fitPlate() {
       const n = Math.max(plate.textContent.length, 4), withArt = box.classList.contains("has-art");
       const size = Math.min(box.offsetHeight * (withArt ? 0.3 : 0.56), (box.offsetWidth * (withArt ? 0.84 : 0.92)) / (n * 0.7));
@@ -357,12 +360,24 @@
       const fit = (box.offsetWidth * 0.8) / (Math.max(slogan.textContent.length, 8) * 0.6);
       slogan.style.fontSize = `${Math.max(6, Math.min(size * 0.5, fit)).toFixed(1)}px`;
     }
-    // Бизнес угадываем по самому длинному знакомому слову в названии: «barber» важнее, чем «bar»
+    // Бизнес угадываем по словам названия. Сильное слово («pizza») весит больше общего («shop»);
+    // слово, совпавшее целиком, весит больше, чем начало слова; короткие слова ищем только целиком,
+    // чтобы «bar» не срабатывал на «barber». Ничего не нашлось — общий пример рекламы.
     function guess(name) {
-      const text = name.toLowerCase();
-      let best = "", len = 0;
-      for (const [k, words] of Object.entries(board.keys))
-        for (const w of words) if (w.length > len && text.includes(w)) { best = k; len = w.length; }
+      const tokens = name.toLowerCase().replace(/[^\p{L}\p{N}\p{M}]+/gu, " ").trim().split(" ");
+      const text = tokens.join(" ");
+      const hit = (w) => {
+        if (w.includes(" ") || /[\u0E00-\u0E7F]/.test(w)) return text.includes(w) ? 1 : 0;
+        if (tokens.includes(w)) return 2;
+        return w.length > 3 && tokens.some((t) => t.startsWith(w)) ? 1 : 0;
+      };
+      let best = "generic", top = 0;
+      for (const [k, v] of Object.entries(board)) {
+        let score = 0;
+        for (const w of v.s) { const h = hit(w); if (h) score += 10 + w.length + (h === 2 ? 4 : 0); }
+        for (const w of v.w) if (hit(w)) score += w.length / 2;
+        if (score > top) { top = score; best = k; }
+      }
       return best;
     }
     // Картинка проявляется от крупной мозаики к чёткой — как будто дорисовывается на глазах
@@ -389,7 +404,7 @@
       kind = next;
       clearInterval(drawTimer);
       box.classList.toggle("has-art", !!kind);
-      slogan.textContent = kind ? board.slogans[kind] : "";
+      slogan.textContent = kind ? board[kind].t : "";
       fitPlate();
       if (!kind) return;
       const img = images[kind] || (images[kind] = Object.assign(new Image(), { src: `../assets/img/b-${kind}.webp` }));
@@ -402,7 +417,10 @@
       fitPlate();
       $$("[data-stage-input]").forEach((i) => { i.value = plateInput.value; i.dispatchEvent(new Event("input", { bubbles: true })); });
       clearTimeout(waitTimer);
-      waitTimer = setTimeout(() => show(name ? guess(name) : ""), 550); // ждём, пока человек допечатает слово
+      waitTimer = setTimeout(() => { // ждём, пока человек допечатает слово
+        if (name.length < 3) return show("");
+        loadBoard().then(() => { if (plateInput.value.trim() === name) show(guess(name)); }).catch(() => {});
+      }, 550);
     });
     addEventListener("resize", () => { fitPlate(); if (kind && images[kind]?.naturalWidth) paint(images[kind], true); });
     document.fonts?.ready.then(fitPlate);

@@ -433,7 +433,7 @@ function page(L, key, ver) {
       copied: L.quiz.copied, lineHint: L.quiz.lineHint
     }
   };
-  if (key === "index") js.board = { keys: board.keys, slogans: board.slogans[L.lang] };
+  if (key === "index") js.vBoard = ver.board;
   const pitch = p.sections.find((s) => s.type === "demo" && s.k === "pitch");
   if (pitch) js.t.pitch = { unit: pitch.unit, ranges: pitch.ranges };
 
@@ -556,6 +556,12 @@ const jsSrc = read("src/site.js");
 const fxSrc = read("src/fx.js");
 const ver = { css: hash(css), js: hash(jsSrc), fx: hash(fxSrc) };
 writeFileSync(path.join(OUT, "assets/fx.js"), fxSrc);
+// «Умный билборд»: слова и примеры рекламы — отдельным файлом на каждый язык; страница подгружает его, когда человек начал печатать название
+ver.board = hash(JSON.stringify(board));
+for (const l of LANGS) {
+  const kinds = Object.fromEntries(Object.entries(board.kinds).map(([k, v]) => [k, { s: v.strong, w: v.weak, t: v.slogan[l] }]));
+  writeFileSync(path.join(OUT, `assets/board.${l}.json`), JSON.stringify({ kinds }));
+}
 // Помощник-бот: отдельные файлы, подключаются на каждой странице
 const asJs = read("src/assistant.js"), asCss = read("src/assistant.css");
 ver.as = hash(asJs + asCss);
