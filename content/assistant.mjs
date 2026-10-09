@@ -12,14 +12,14 @@ const K = {
   lightbox: ["короб", "лайтбокс", "лайт бокс", "lightbox", "light box", "box sign"],
   led: ["экран", "дисплей", "светодиод", "пиксел", " led ", "screen", "display", "video wall", "videowall", "pixel"],
   print: ["печат", "баннер", "плёнк", "пленк", "винил", "наклейк", "ламинац", "перфор", "print", "banner", "vinyl", " film", "sticker", "laminat", "perforated"],
-  dynamic: ["динамическ", "проектор", "гобо", "лазер", "голограф", "проекц", "вентилятор", "подвижн", "движущ", "hologram", "projector", "projection", "gobo", "laser", " fan", "moving"],
+  dynamic: ["динамическ", "проектор", "гобо", "лазер", "голограф", "проекц", "вентилятор", "подвижн", "движущ", "hologra", "projector", "projection", "gobo", "laser", " fan", "moving"],
   robots: ["робот", "аренд", "выкуп", "robot", " rent", "rental", "lease"],
   branding: ["бренд", "дизайн", "макет", "логотип", "упаковк", "айдентик", "файл", "brand", "branding", "design", "logo", "artwork", "packaging", "layout", "identity", " file"],
   price: ["цена", "цены", "цену", "цене", "цен", "ценник", "стоимост", "стоим", "стоит", "стоят", "сколько", "прайс", "расценк", "почём", "почем", "бюджет", "смета", "расчёт", "расчет", "рассчитат", "посчитат", "дорого", "price", "pric", "cost", "cost of", "how much", "much", "quote", "quotation", "estimate", "budget"],
   time: ["срок", "врем", "долго", "быстро", "когда", "срочно", "скоро", "сколько времени", "how long", "how fast", "how soon", "when", "deadline", "turnaround", "lead time", "timeline", "urgent", "asap"],
-  install: ["монтаж", "установк", "установить", "смонтир", "повесит", "креплен", "install", " mount", "mounting", "fitting", "put up", " hang"],
+  install: ["монтаж", "монтир", "установ", "повесит", "креплен", "install", " mount", "mounting", "fitting", "put up", " hang"],
   where: ["где", "адрес", "находит", "расположен", "добрат", "локаци", "чалонг", "пхукет", "район", "приехать", "офис", "мастерск", "производств", "where", "address", "location", "located", "find you", "chalong", "phuket", "office", "workshop", "factory", "visit", " map", "directions"],
-  human: ["менеджер", "оператор", "живой", "позвон", "звонок", "звонить", "телефон", "связаться", "контакт", "номер", "ватсап", "вотсап", "whatsapp", "телеграм", "telegram", "язык", "русск", "manager", "human", "person", "operator", " agent", " call", "phone", "contact", "talk", "speak", "language", "russian", "english"],
+  human: ["менеджер", "оператор", "живой", "звон", "телефон", "связ", "свяж", "контакт", "номер", "ватсап", "вотсап", "whatsapp", "телеграм", "telegram", "язык", "русск", "manager", "human", "person", "operator", " agent", " call", "phone", "contact", "talk", "speak", "language", "russian", "english"],
   thanks: ["спасибо", "благодар", "спс", "отлично", "супер", "thank", "thx", " ty ", "cheers", "great", "perfect"]
 };
 
