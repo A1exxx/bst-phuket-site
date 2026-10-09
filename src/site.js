@@ -344,19 +344,67 @@
     if (tier && !quiz.elements.note.value) quiz.elements.note.value = tier.dataset.note;
   });
 
-  // --- Первый экран: название из поля появляется на вывеске прямо в кадре ---
+  // --- Первый экран: название из поля появляется на вывеске в кадре; по названию сайт угадывает бизнес и дорисовывает пример рекламы ---
   const plate = $("[data-plate]"), plateInput = $("[data-plate-input]");
   if (plate) {
-    const fitPlate = () => {
-      const box = plate.parentElement, n = Math.max(plate.textContent.length, 4);
-      plate.style.fontSize = `${Math.min(box.offsetHeight * 0.56, (box.offsetWidth * 0.92) / (n * 0.7)).toFixed(1)}px`;
-    };
+    const box = plate.parentElement, art = $(".plate-art", box), slogan = $("[data-slogan]", box), ctx = art.getContext("2d");
+    const board = B.board, images = {};
+    let kind = "", drawTimer = 0, waitTimer = 0;
+    function fitPlate() {
+      const n = Math.max(plate.textContent.length, 4), withArt = box.classList.contains("has-art");
+      const size = Math.min(box.offsetHeight * (withArt ? 0.3 : 0.56), (box.offsetWidth * (withArt ? 0.84 : 0.92)) / (n * 0.7));
+      plate.style.fontSize = `${size.toFixed(1)}px`;
+      const fit = (box.offsetWidth * 0.8) / (Math.max(slogan.textContent.length, 8) * 0.6);
+      slogan.style.fontSize = `${Math.max(6, Math.min(size * 0.5, fit)).toFixed(1)}px`;
+    }
+    // Бизнес угадываем по самому длинному знакомому слову в названии: «barber» важнее, чем «bar»
+    function guess(name) {
+      const text = name.toLowerCase();
+      let best = "", len = 0;
+      for (const [k, words] of Object.entries(board.keys))
+        for (const w of words) if (w.length > len && text.includes(w)) { best = k; len = w.length; }
+      return best;
+    }
+    // Картинка проявляется от крупной мозаики к чёткой — как будто дорисовывается на глазах
+    function paint(img, atOnce) {
+      clearInterval(drawTimer);
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const w = (art.width = Math.round(box.offsetWidth * dpr)), h = (art.height = Math.round(box.offsetHeight * dpr));
+      const steps = reduce || atOnce ? [1] : [28, 18, 12, 8, 5, 3, 2, 1];
+      const tiny = document.createElement("canvas"), tctx = tiny.getContext("2d");
+      let i = 0;
+      const step = () => {
+        const cell = steps[i++];
+        if (cell === 1) { ctx.imageSmoothingEnabled = true; ctx.drawImage(img, 0, 0, w, h); return clearInterval(drawTimer); }
+        tiny.width = Math.max(2, Math.round(w / (cell * dpr))); tiny.height = Math.max(2, Math.round(h / (cell * dpr)));
+        tctx.drawImage(img, 0, 0, tiny.width, tiny.height);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(tiny, 0, 0, w, h);
+      };
+      step();
+      if (steps.length > 1) drawTimer = setInterval(step, 130);
+    }
+    function show(next) {
+      if (next === kind) return;
+      kind = next;
+      clearInterval(drawTimer);
+      box.classList.toggle("has-art", !!kind);
+      slogan.textContent = kind ? board.slogans[kind] : "";
+      fitPlate();
+      if (!kind) return;
+      const img = images[kind] || (images[kind] = Object.assign(new Image(), { src: `../assets/img/b-${kind}.webp` }));
+      if (img.complete && img.naturalWidth) paint(img);
+      else img.onload = () => { if (kind === next) paint(img); };
+    }
     plateInput.addEventListener("input", () => {
-      plate.textContent = plateInput.value.trim() || T.sample;
+      const name = plateInput.value.trim();
+      plate.textContent = name || T.sample;
       fitPlate();
       $$("[data-stage-input]").forEach((i) => { i.value = plateInput.value; i.dispatchEvent(new Event("input", { bubbles: true })); });
+      clearTimeout(waitTimer);
+      waitTimer = setTimeout(() => show(name ? guess(name) : ""), 550); // ждём, пока человек допечатает слово
     });
-    addEventListener("resize", fitPlate);
+    addEventListener("resize", () => { fitPlate(); if (kind && images[kind]?.naturalWidth) paint(images[kind], true); });
     document.fonts?.ready.then(fitPlate);
     fitPlate();
   }

@@ -5,6 +5,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { build as bundle } from "esbuild";
 import cfg from "./site.config.mjs";
+import board from "./content/board.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(ROOT, "docs");
@@ -76,7 +77,7 @@ function stage(L, id, modes, labels, legend, withNotes, auto) {
 
 // Картинки направлений — кинематографичные кадры
 const photo = (name) => `<div class="vis vis-photo" aria-hidden="true"><img src="../assets/img/${name}.webp" alt="" width="1200" height="1200" loading="lazy" decoding="async"></div>`;
-const VIS = { signs: photo("t-signs"), letters: photo("t-letters"), led: photo("t-led"), print: photo("t-print"), dynamic: photo("t-dynamic"), robots: photo("t-robots"), branding: photo("t-branding") };
+const VIS = { signs: photo("t-signs"), letters: photo("t-letters"), led: photo("t-led"), print: photo("t-print"), dynamic: photo("t-dynamic"), robots: photo("r-row"), branding: photo("t-branding") };
 const ARROW = () => `<i class="btn-arrow">${icon("arrow-up-right")}</i>`;
 
 function secHead(s, extra = "") {
@@ -99,7 +100,7 @@ const R = {
   hero(s, L) {
     return `
 <section class="hero cine night">
-  <div class="shot" aria-hidden="true"><div class="cam"><img src="../assets/img/hero.webp" alt="" width="1600" height="1600" fetchpriority="high"><div class="plate"><span data-plate>${esc(L.stage.sample)}</span></div></div></div>
+  <div class="shot" aria-hidden="true"><div class="cam"><img src="../assets/img/hero.webp" alt="" width="1600" height="1600" fetchpriority="high"><div class="plate"><canvas class="plate-art" aria-hidden="true"></canvas><span data-plate>${esc(L.stage.sample)}</span><em class="plate-slogan" data-slogan></em></div></div></div>
   <div class="grade" aria-hidden="true"></div>
   <div class="wrap cine-ui">
     <div class="cine-top">
@@ -132,7 +133,7 @@ const R = {
   head(s, L, key) {
     return `
 <section class="phead night">
-  <img class="phead-bg" src="../assets/img/t-${s.k}.webp" alt="" width="1200" height="1200" fetchpriority="high" aria-hidden="true">
+  <img class="phead-bg" src="../assets/img/${s.k === "robots" ? "r-row" : "t-" + s.k}.webp" alt="" width="1200" height="1200" fetchpriority="high" aria-hidden="true">
   <div class="wrap phead-grid">
     <div class="phead-copy">
       <nav class="crumbs" aria-label="${esc(L.ui.home)}"><a href="index.html">${esc(L.ui.home)}</a><span aria-hidden="true">/</span><span aria-current="page">${esc(L.ui.nav[key])}</span></nav>
@@ -218,7 +219,7 @@ const R = {
 
   feature(s, L) {
     const img = s.img
-      ? `<figure class="feature-img rv"><img src="../assets/img/${s.img}.webp" alt="${esc(plain(s.h2))}" width="1200" height="896" loading="lazy" decoding="async"><figcaption>${esc(L.ui.photoNote)}</figcaption></figure>`
+      ? `<figure class="feature-img rv"><img src="../assets/img/${s.img}.webp" alt="${esc(plain(s.h2))}" width="900" height="1600" loading="lazy" decoding="async"></figure>`
       : "";
     return `
 <section class="sec ${s.tone} feature${s.img ? "" : " feature-solo"}" id="${s.id}">
@@ -314,6 +315,16 @@ const R = {
       <div class="parts rv">${s.parts.map((p) => `<button type="button" class="part" data-part="${p.k}" aria-pressed="false"><strong>${esc(p.t)}</strong><span>${esc(p.d)}</span></button>`).join("")}</div>
       <button type="button" class="btn btn-ghost" data-explode data-on="${esc(s.assemble)}" data-off="${esc(s.explode)}">${esc(s.explode)}</button>
     </div>
+  </div>
+</section>`;
+  },
+
+  gallery(s) {
+    return `
+<section class="sec ${s.tone}" id="${s.id}">
+  <div class="wrap">
+    ${secHead(s)}
+    <div class="shots rv" tabindex="0" role="region" aria-label="${esc(plain(s.h2))}">${s.items.map((it) => `<figure><img src="../assets/img/${it.img}.webp" alt="${esc(it.alt)}" width="640" height="1138" loading="lazy" decoding="async"></figure>`).join("")}</div>
   </div>
 </section>`;
   },
@@ -421,6 +432,7 @@ function page(L, key, ver) {
       copied: L.quiz.copied, lineHint: L.quiz.lineHint
     }
   };
+  if (key === "index") js.board = { keys: board.keys, slogans: board.slogans[L.lang] };
   const pitch = p.sections.find((s) => s.type === "demo" && s.k === "pitch");
   if (pitch) js.t.pitch = { unit: pitch.unit, ranges: pitch.ranges };
 
@@ -451,7 +463,7 @@ ${alt}
 <a class="skip" href="#main">${esc(L.ui.skip)}</a>
 <header class="hdr" data-hdr>
   <div class="wrap hdr-in">
-    <a class="logo" href="index.html" aria-label="BST Phuket — ${esc(L.ui.home)}"><b>BST</b><span>Phuket</span></a>
+    <a class="logo" href="index.html" aria-label="BST Phuket — ${esc(L.ui.home)}"><img src="../assets/img/logo.png" alt="BST" width="404" height="147"><span>Phuket</span></a>
     <nav class="nav" aria-label="${esc(L.ui.menu)}">${nav("")}</nav>
     <div class="hdr-tools">
       <div class="langs" role="group" aria-label="${esc(L.ui.langLabel)}">${langs}</div>
@@ -476,7 +488,7 @@ ${contacts(L)}
 <footer class="ftr night">
   <div class="wrap ftr-grid">
     <div>
-      <a class="logo" href="index.html" aria-label="BST Phuket — ${esc(L.ui.home)}"><b>BST</b><span>Phuket</span></a>
+      <a class="logo" href="index.html" aria-label="BST Phuket — ${esc(L.ui.home)}"><img src="../assets/img/logo.png" alt="BST" width="404" height="147"><span>Phuket</span></a>
       <p>${esc(L.footer.about)}</p>
     </div>
     <nav aria-label="${esc(L.footer.navTitle)}">
@@ -523,7 +535,7 @@ ${cfg.noindex ? `<meta name="robots" content="noindex">` : ""}
 </head>
 <body class="gate night">
 <main class="gate-in">
-  <p class="logo"><b>BST</b><span>Phuket</span></p>
+  <p class="logo"><img src="assets/img/logo.png" alt="BST" width="404" height="147"><span>Phuket</span></p>
   <nav aria-label="Language">${LANGS.map((l) => `<a class="btn btn-ghost btn-lg" href="${l}/" lang="${content[l].htmlLang}">${esc(content[l].name)}</a>`).join("")}</nav>
 </main>
 </body>

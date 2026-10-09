@@ -333,7 +333,7 @@ export default {
           "type": "feature",
           "id": "robots",
           "tone": "blue",
-          "img": "robot",
+          "img": "r-night",
           "h2": "An advertising robot {calls in customers} while you work",
           "text": [
             "A moving figure with your poster and an audio message stands at the entrance and catches the eye of passers-by. Works in rain and sun, day and night."
@@ -1307,10 +1307,43 @@ export default {
           ]
         },
         {
+          "type": "gallery",
+          "id": "real",
+          "tone": "paper",
+          "h2": "Our robots {at work}",
+          "lead": "Real photos: figures holding client posters and our own.",
+          "items": [
+            {
+              "img": "r-1",
+              "alt": "Robot holding a poster in Thai"
+            },
+            {
+              "img": "r-2",
+              "alt": "Robot with a client's advert"
+            },
+            {
+              "img": "r-3",
+              "alt": "Robot holding a BST poster"
+            },
+            {
+              "img": "r-4",
+              "alt": "Robots lined up by a wall"
+            },
+            {
+              "img": "r-5",
+              "alt": "Robot with a lit poster at night"
+            },
+            {
+              "img": "r-6",
+              "alt": "A row of robots with posters"
+            }
+          ]
+        },
+        {
           "type": "feature",
           "id": "look",
           "tone": "blue",
-          "img": "robot",
+          "img": "r-night",
           "h2": "People {notice} it and remember it",
           "text": [
             "The robot moves, holds your poster and plays an audio message. It's hard to walk past one without looking."

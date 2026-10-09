@@ -190,7 +190,7 @@ void main(){
       const half = track.scrollWidth / 2;
       vel += ((scrollY - lastY) / dt - vel) * 0.1; lastY = scrollY;
       if (Math.abs(vel) > 40) dir = vel > 0 ? -1 : 1;
-      x += dir * 54 * dt * (1 + Math.min(5, Math.abs(vel) / 240));
+      x += dir * 44 * dt * (1 + Math.min(1.5, Math.abs(vel) / 420));
       if (x <= -half) x += half; else if (x > 0) x -= half;
       track.style.transform = `translate3d(${x.toFixed(1)}px,0,0)`;
     };
@@ -205,10 +205,10 @@ void main(){
       f = requestAnimationFrame(() => {
         f = 0;
         const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
-        el.style.setProperty("--ty", `${(x * 9).toFixed(2)}deg`);
-        el.style.setProperty("--tx", `${(-y * 9).toFixed(2)}deg`);
-        el.style.setProperty("--px", `${(-x * 18).toFixed(1)}px`);
-        el.style.setProperty("--py", `${(-y * 14).toFixed(1)}px`);
+        el.style.setProperty("--ty", `${(x * 4).toFixed(2)}deg`);
+        el.style.setProperty("--tx", `${(-y * 4).toFixed(2)}deg`);
+        el.style.setProperty("--px", `${(-x * 8).toFixed(1)}px`);
+        el.style.setProperty("--py", `${(-y * 6).toFixed(1)}px`);
       });
     });
     el.addEventListener("pointerleave", () => ["--tx", "--ty", "--px", "--py"].forEach((p) => el.style.removeProperty(p)));
@@ -268,10 +268,13 @@ void main(){
   function init() {
     if (!lite) $$(".model").forEach(model);
     if (!lite) $$("[data-rays]").forEach(lightRays);
-    if (!lite) $$("[data-quiz]").forEach((el) => electricBorder(el));
     if (!reduce) $$(".marquee").forEach(scrollVelocity);
-    if (hover && !reduce) { $$(".bento .tile").forEach(tilt); $$(".btn-lg").forEach(magnet); }
-    if (!lite) clickSpark();
+    if (hover && !reduce) $$(".bento .tile").forEach(tilt);
+    // Спокойный режим (09.10.2026, по просьбе владельца «поскромнее»): электрическая рамка формы, притяжение кнопок
+    // и искры от нажатия выключены. Вернуть — поставить LOUD = true.
+    const LOUD = false;
+    if (LOUD && !lite) { $$("[data-quiz]").forEach((el) => electricBorder(el)); clickSpark(); }
+    if (LOUD && hover && !reduce) $$(".btn-lg").forEach(magnet);
   }
   // Не мешаем первой отрисовке: эффекты включаются, когда браузер свободен
   (window.requestIdleCallback || ((f) => setTimeout(f, 200)))(init, { timeout: 1200 });
