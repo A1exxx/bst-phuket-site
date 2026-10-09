@@ -1,0 +1,76 @@
+/* BST Phuket — помощник на сайте. Спокойный вид: плоская тёмная панель, тонкая рамка, одна мягкая тень.
+   Без свечения, без прыжков; переходы только по transform и opacity. Переменные берутся из site.css, классы — с префиксом as-. */
+
+:where(.as-root) button, :where(.as-root) input { font: inherit; color: inherit; }
+:where(.as-root) p { margin: 0; }
+.as-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Кнопка-открывашка: на телефоне стоит над нижней панелью .dock */
+.as-launch { position: fixed; right: 12px; bottom: calc(88px + env(safe-area-inset-bottom)); z-index: 45; display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 22px 0 18px; border: 0; border-radius: 999px; background: var(--orange); color: var(--night); font-size: .95rem; font-weight: 800; line-height: 1.2; cursor: pointer; box-shadow: 0 10px 28px -12px rgba(0, 0, 0, .6); transition: transform .2s var(--ease); }
+.as-launch svg { width: 22px; height: 22px; flex: none; }
+.as-launch:hover { background: var(--orange-hi); }
+.as-launch:active { transform: translateY(1px); }
+/* Фон страницы меняется: тёмное кольцо видно на светлом, белая обводка — на тёмном */
+.as-launch:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 0 3px var(--night), 0 10px 28px -12px rgba(0, 0, 0, .6); }
+
+/* Окно: на телефоне нижняя шторка */
+.as-panel { position: fixed; left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); z-index: 55; display: flex; flex-direction: column; height: min(82vh, 640px); height: min(82svh, 640px); overflow: hidden; border-radius: var(--r-l); background: var(--night-2); color: var(--on-night); box-shadow: inset 0 0 0 1px var(--line-night), 0 24px 56px -20px rgba(0, 0, 0, .65); opacity: 0; transform: translateY(14px); transition: opacity .25s var(--ease), transform .25s var(--ease); }
+.as-panel[hidden] { display: none; }
+.as-panel.is-on { opacity: 1; transform: none; }
+@media (max-width: 899px) { .as-open .as-launch { visibility: hidden; } } /* шторка закрывает кнопку */
+
+@media (min-width: 900px) {
+  .as-launch { right: 24px; bottom: 24px; }
+  .as-panel { left: auto; right: 24px; bottom: 96px; width: 384px; height: min(580px, 78vh); }
+}
+
+/* Шапка окна */
+.as-head { display: flex; align-items: flex-start; gap: 12px; padding: 16px 10px 14px 18px; border-bottom: 1px solid var(--line-night); }
+.as-head-txt { min-width: 0; padding-top: 2px; }
+.as-title { font-size: 1rem; font-weight: 800; line-height: 1.3; }
+.as-sub { margin-top: 4px; font-size: .8rem; line-height: 1.45; color: var(--mut-night); }
+.as-close { flex: none; display: grid; place-items: center; width: 44px; height: 44px; margin: -6px 0 -6px auto; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--mut-night); cursor: pointer; }
+.as-close:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+
+/* Сообщения */
+.as-list { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; padding: 16px 14px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .2) transparent; }
+.as-msg { display: flex; flex-direction: column; gap: 8px; max-width: 88%; animation: as-in .2s var(--ease) backwards; }
+.as-bot { align-self: flex-start; align-items: flex-start; }
+.as-user { align-self: flex-end; align-items: flex-end; }
+.as-bubble { padding: 10px 14px; border-radius: 18px; font-size: .92rem; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; white-space: pre-wrap; }
+:lang(th) .as-bubble { line-height: 1.7; }
+.as-bot .as-bubble { border-bottom-left-radius: 6px; background: rgba(255, 255, 255, .06); color: var(--on-night); }
+.as-user .as-bubble { border-bottom-right-radius: 6px; background: var(--orange); color: var(--night); font-weight: 600; }
+@keyframes as-in { from { opacity: 0; } }
+
+/* Три точки, пока готовится ответ: только плавное изменение прозрачности */
+.as-typing .as-bubble { display: flex; align-items: center; gap: 5px; padding: 15px 16px; }
+.as-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mut-night); animation: as-pulse 1.2s ease-in-out infinite; }
+.as-dot:nth-child(2) { animation-delay: .15s; }
+.as-dot:nth-child(3) { animation-delay: .3s; }
+@keyframes as-pulse { 0%, 80%, 100% { opacity: .3; } 40% { opacity: 1; } }
+
+/* Подсказки и кнопки: таблетки не ниже 44px */
+.as-chips, .as-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.as-chips { align-self: flex-start; margin-top: 2px; }
+.as-chip, .as-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 8px 18px; border: 0; border-radius: 999px; font-size: .88rem; font-weight: 700; line-height: 1.2; text-align: center; text-decoration: none; cursor: pointer; transition: transform .2s var(--ease); }
+.as-chip:active, .as-btn:active, .as-send:active { transform: translateY(1px); }
+.as-chip, .as-btn-ghost { background: transparent; color: var(--on-night); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .28); }
+.as-chip:hover, .as-btn-ghost:hover { background: rgba(255, 255, 255, .1); }
+.as-btn-solid { background: var(--orange); color: var(--night); }
+.as-btn-solid:hover { background: var(--orange-hi); }
+
+/* Поле ввода */
+.as-form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line-night); }
+.as-input { flex: 1 1 auto; min-width: 0; min-height: 48px; padding: 0 18px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px var(--line-night); color: var(--on-night); font-size: 16px; } /* 16px, чтобы iOS не увеличивал страницу */
+.as-input::placeholder { color: var(--mut-night); opacity: 1; }
+.as-input:focus-visible { outline: 0; box-shadow: inset 0 0 0 2px var(--orange-hi); }
+.as-send { flex: none; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; background: var(--orange); color: var(--night); cursor: pointer; transition: transform .2s var(--ease); }
+.as-send:hover { background: var(--orange-hi); }
+
+@media (prefers-reduced-motion: reduce) {
+  .as-launch, .as-panel, .as-chip, .as-btn, .as-send { transition: none; }
+  .as-panel { transform: none; }
+  .as-msg, .as-dot { animation: none; }
+}
+@media print { .as-root { display: none; } }

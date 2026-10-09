@@ -799,3 +799,9 @@ h2 { font-size: clamp(1.8rem, 1.1rem + 2.5vw, 3.1rem); }
 .phead::before { background:
   linear-gradient(180deg, rgba(3, 7, 20, .78) 0%, rgba(3, 7, 20, .3) 30%, rgba(3, 7, 20, .42) 56%, rgba(5, 11, 31, 1) 100%),
   linear-gradient(90deg, rgba(3, 7, 20, .82) 0%, rgba(3, 7, 20, .4) 55%, rgba(3, 7, 20, .1) 100%); }
+
+/* Кнопка помощника на телефоне появляется вместе с нижней панелью: вверху страницы она закрывала бы поле и кнопки первого экрана */
+@media (max-width: 899px) {
+  .as-launch { transition: opacity .3s, transform .3s var(--ease); }
+  .dock:not(.is-on) ~ .as-root:not(.as-open) .as-launch { opacity: 0; pointer-events: none; transform: translateY(12px); }
+}

@@ -13,6 +13,7 @@ export default {
   mapEmbed: "https://www.openstreetmap.org/export/embed.html?bbox=98.305%2C7.822%2C98.372%2C7.872&layer=mapnik",
   mapLink: "", // ссылка на точку BST в Google Maps; пусто — ссылка скрыта
   metaPixelId: "", // пусто — пиксель Meta не загружается
+  assistUrl: "", // адрес сервера с нейросетью для помощника-бота; пусто — бот отвечает по готовым ответам
   noindex: true, // демо-версия закрыта от поисковиков; перед запуском рекламы поставить false
   baseUrl: "https://a1exxx.github.io/bst-phuket-site/"
 };

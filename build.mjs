@@ -6,6 +6,7 @@ import path from "node:path";
 import { build as bundle } from "esbuild";
 import cfg from "./site.config.mjs";
 import board from "./content/board.mjs";
+import assist from "./content/assistant.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(ROOT, "docs");
@@ -424,7 +425,7 @@ function page(L, key, ver) {
     ? "family=Montserrat:wght@500;600;700;800;900&family=Prompt:wght@400;500;600;700;800"
     : "family=Montserrat:wght@500;600;700;800;900";
   const js = {
-    lang: L.lang, v3d: ver.v3d,
+    lang: L.lang, v3d: ver.v3d, assistUrl: cfg.assistUrl || "",
     wa: cfg.phoneE164, tg: cfg.telegram, line: cfg.line, phone: cfg.phoneLocal, pixel: cfg.metaPixelId,
     t: {
       sample: L.stage.sample, modes: { ...L.stage.modes, ...L.stage.lightModes }, notes: L.stage.notes, msg: L.stage.msg,
@@ -458,6 +459,7 @@ ${alt}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?${fonts}&display=swap">
 <script>document.documentElement.className="js"</script>
 <link rel="stylesheet" href="../assets/site.css?v=${ver.css}">
+<link rel="stylesheet" href="../assets/assistant.css?v=${ver.as}">
 </head>
 <body data-page="${key}">
 <a class="skip" href="#main">${esc(L.ui.skip)}</a>
@@ -510,6 +512,8 @@ ${contacts(L)}
 <script>window.BST=${JSON.stringify(js).replace(/</g, "\\u003c")}</script>
 <script src="../assets/site.js?v=${ver.js}" defer></script>
 <script src="../assets/fx.js?v=${ver.fx}" defer></script>
+<script>window.BST_ASSIST=${JSON.stringify(assist[L.lang]).replace(/</g, "\\u003c")}</script>
+<script src="../assets/assistant.js?v=${ver.as}" defer></script>
 </body>
 </html>
 `;
@@ -552,6 +556,11 @@ const jsSrc = read("src/site.js");
 const fxSrc = read("src/fx.js");
 const ver = { css: hash(css), js: hash(jsSrc), fx: hash(fxSrc) };
 writeFileSync(path.join(OUT, "assets/fx.js"), fxSrc);
+// Помощник-бот: отдельные файлы, подключаются на каждой странице
+const asJs = read("src/assistant.js"), asCss = read("src/assistant.css");
+ver.as = hash(asJs + asCss);
+writeFileSync(path.join(OUT, "assets/assistant.js"), asJs);
+writeFileSync(path.join(OUT, "assets/assistant.css"), asCss);
 // 3D-модель: three.js и сцена собираются в один файл, который страница подгружает по требованию
 await bundle({ entryPoints: [path.join(ROOT, "src/scene3d.js")], bundle: true, minify: true, format: "esm", target: "es2020", outfile: path.join(OUT, "assets/scene3d.js"), logLevel: "error" });
 ver.v3d = hash(readFileSync(path.join(OUT, "assets/scene3d.js")));
