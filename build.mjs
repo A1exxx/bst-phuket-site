@@ -635,6 +635,14 @@ cpSync(path.join(ROOT, "src/img"), path.join(OUT, "assets/img"), { recursive: tr
 cpSync(path.join(ROOT, "src/look"), path.join(OUT, "look"), { recursive: true }); // страница с тремя вариантами первого экрана
 if (existsSync(path.join(ROOT, "src/favicon.svg"))) cpSync(path.join(ROOT, "src/favicon.svg"), path.join(OUT, "assets/favicon.svg"));
 writeFileSync(path.join(OUT, ".nojekyll"), "");
+// Свой домен: GitHub Pages берёт его из файла CNAME; без этого файла после пересборки сайт вернулся бы на a1exxx.github.io
+if (cfg.domain) writeFileSync(path.join(OUT, "CNAME"), `${cfg.domain}\n`);
+// Для поисковиков, когда сайт открыт для поиска: карта сайта и robots.txt (страница /look/ закрыта своим тегом noindex)
+if (!cfg.noindex) {
+  const urls = LANGS.flatMap((l) => PAGES.map((k) => `${cfg.baseUrl}${l}/${k}.html`));
+  writeFileSync(path.join(OUT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u}</loc></url>`).join("\n")}\n</urlset>\n`);
+  writeFileSync(path.join(OUT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${cfg.baseUrl}sitemap.xml\n`);
+}
 writeFileSync(path.join(OUT, "index.html"), gateway(ver));
 
 let n = 0;

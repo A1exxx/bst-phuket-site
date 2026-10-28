@@ -14,6 +14,7 @@ export default {
   mapLink: "", // ссылка на точку BST в Google Maps; пусто — ссылка скрыта
   metaPixelId: "", // пусто — пиксель Meta не загружается
   assistUrl: "", // адрес сервера с нейросетью для помощника-бота; пусто — бот отвечает по готовым ответам
-  noindex: true, // демо-версия закрыта от поисковиков; перед запуском рекламы поставить false
-  baseUrl: "https://a1exxx.github.io/bst-phuket-site/"
+  noindex: false, // true — сайт закрыт от поисковиков (так было, пока это был показ заказчику)
+  domain: "bst-ads.com", // свой домен: сборка кладёт его в docs/CNAME, по нему GitHub показывает сайт; пусто — адрес a1exxx.github.io
+  baseUrl: "https://bst-ads.com/"
 };
