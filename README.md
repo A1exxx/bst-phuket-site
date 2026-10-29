@@ -76,3 +76,5 @@
 Записи для GitHub Pages: у `@` четыре записи A — 185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153; у `www` запись CNAME — `a1exxx.github.io`. Записи почты (MX на eforward*.registrar-servers.com) и SPF не трогать: на домене работает пересылка почты.
 
 Как было до переезда 28.10.2026 (для отката на старый сайт Tilda): `@` A 176.57.67.52 и `www` A 176.57.67.52, время жизни записей 30 минут.
+
+Если браузер пишет «подключение не защищено», а сайт по http открывается: GitHub не начал выпуск сертификата (так бывает, если домен прописан в GitHub раньше, чем разошлись записи домена). Лечится повторной записью домена: `gh api -X PUT repos/A1exxx/bst-phuket-site/pages -F cname=null`, затем `gh api -X PUT repos/A1exxx/bst-phuket-site/pages -f cname=bst-ads.com`, после выдачи сертификата — `gh api -X PUT repos/A1exxx/bst-phuket-site/pages -F https_enforced=true`. GitHub при этом сам делает коммиты с файлом CNAME — перед следующей выкладкой выполнить `git pull`.
